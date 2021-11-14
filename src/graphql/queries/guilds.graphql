@@ -1,0 +1,12 @@
+query getGuilds {
+  guilds {
+    id
+    name
+    icon
+    owner
+    permissions
+    permissions_new
+    features
+    in
+  }
+}
