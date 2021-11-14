@@ -1,0 +1,12 @@
+query currGuild($gid: String!) {
+  currGuild(guildId:$gid) {
+    id
+    prefix
+    modRole
+    adminRole
+    muteRole
+    disabledCommands
+    systemNotice
+    cleanup
+  }
+}
