@@ -12,7 +12,7 @@ export const Navbar: FC = () => {
 
   if (data && !data.me) {
     body = (
-      <a href="https://discord.com/api/oauth2/authorize?client_id=613073438902452239&redirect_uri=http%3A%2F%2Flocalhost%3A4000%2Fdiscord%2Fauth%2Fcallback&response_type=code&scope=identify%20email%20guilds">
+      <a href="https://discord.com/api/oauth2/authorize?client_id=613073438902452239&redirect_uri=http%3A%2F%2F192.168.1.14%3A4000%2Fdiscord%2Fauth%2Fcallback&response_type=code&scope=identify%20email%20guilds">
         <Text p={3} borderRadius={35}>
           Login
         </Text>

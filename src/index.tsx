@@ -17,9 +17,9 @@ function betterUpdateQuery<Result, Query>(
 ) {
   return cache.updateQuery(qi, (data) => fn(result, data as any) as any);
 }
-
 const client = createClient({
-  url: "http://localhost:4000/graphql",
+  
+  url: "http://192.168.1.14:4000/graphql",
   fetchOptions: {
     credentials: "include",
   },
