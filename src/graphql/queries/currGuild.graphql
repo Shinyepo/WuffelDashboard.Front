@@ -1,7 +1,9 @@
 query currGuild($gid: String!) {
   currGuild(guildId:$gid) {
     id
+    guildId
     prefix
+    userCount
     modRole
     adminRole
     muteRole

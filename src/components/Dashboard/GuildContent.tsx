@@ -24,7 +24,7 @@ export const GuildContent: FC<Props> = ({ gid, handleSorting }) => {
   }
 
   if (!fetching && data)
-    body = <>{data?.currGuild === null ? <NotInvited id={gid} handleClose={reExecute} handleSorting={handleSorting} /> : <Main />}</>; 
+    body = <>{data?.currGuild === null ? <NotInvited id={gid} handleClose={reExecute} handleSorting={handleSorting} /> : <Main guildData={data}/>}</>; 
 
   return body;
 };

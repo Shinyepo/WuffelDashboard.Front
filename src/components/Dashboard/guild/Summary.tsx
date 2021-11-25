@@ -1,8 +1,12 @@
 import { FC } from "react";
 import { DailyStatistics } from "./components/DailyStatistics";
 
-export const Summary: FC = () => (
+interface Props {
+    count: string | undefined
+}
+
+export const Summary: FC<Props> = ({ count }) => (
     <>
-    <DailyStatistics />
+    <DailyStatistics count={count} />
     </>
 )

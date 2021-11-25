@@ -26,6 +26,17 @@ export type DiscordGuilds = {
   permissions_new: Scalars['String'];
 };
 
+export type GuildTraffic = {
+  __typename?: 'GuildTraffic';
+  createdAt: Scalars['String'];
+  guildId: Scalars['String'];
+  id: Scalars['Float'];
+  joined: Scalars['Boolean'];
+  nickname?: Maybe<Scalars['String']>;
+  userId: Scalars['String'];
+  username?: Maybe<Scalars['String']>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createUser: Users;
@@ -39,11 +50,13 @@ export type MutationCreateUserArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  currGuild: Settings;
+  currGuild?: Maybe<Settings>;
+  guildTraffic?: Maybe<Array<GuildTraffic>>;
   guilds?: Maybe<Array<DiscordGuilds>>;
   loginUser?: Maybe<Users>;
   logoutUser: Scalars['Boolean'];
   me?: Maybe<Users>;
+  streamerRanking?: Maybe<Array<StreamLeaderboard>>;
   user?: Maybe<UserResponse>;
   users: UserResponse;
 };
@@ -54,8 +67,18 @@ export type QueryCurrGuildArgs = {
 };
 
 
+export type QueryGuildTrafficArgs = {
+  guildId: Scalars['String'];
+};
+
+
 export type QueryLoginUserArgs = {
   username: Scalars['String'];
+};
+
+
+export type QueryStreamerRankingArgs = {
+  guildId: Scalars['String'];
 };
 
 
@@ -65,14 +88,28 @@ export type QueryUserArgs = {
 
 export type Settings = {
   __typename?: 'Settings';
-  adminRole: Scalars['String'];
-  cleanup: Scalars['Boolean'];
-  disabledCommands: Scalars['String'];
-  id: Scalars['String'];
-  modRole: Scalars['String'];
-  muteRole: Scalars['String'];
+  adminRole?: Maybe<Scalars['String']>;
+  cleanup?: Maybe<Scalars['Boolean']>;
+  disabledCommands?: Maybe<Scalars['String']>;
+  guildId: Scalars['String'];
+  id: Scalars['Float'];
+  modRole?: Maybe<Scalars['String']>;
+  muteRole?: Maybe<Scalars['String']>;
   prefix: Scalars['String'];
-  systemNotice: Scalars['Boolean'];
+  systemNotice?: Maybe<Scalars['Boolean']>;
+  userCount: Scalars['String'];
+};
+
+export type StreamLeaderboard = {
+  __typename?: 'StreamLeaderboard';
+  createdAt: Scalars['String'];
+  guildId: Scalars['String'];
+  id: Scalars['Float'];
+  nickname: Scalars['String'];
+  timeStreamed: Scalars['String'];
+  updatedAt: Scalars['String'];
+  userId: Scalars['String'];
+  username: Scalars['String'];
 };
 
 export type UserResponse = {
@@ -124,7 +161,14 @@ export type CurrGuildQueryVariables = Exact<{
 }>;
 
 
-export type CurrGuildQuery = { __typename?: 'Query', currGuild: { __typename?: 'Settings', id: string, prefix: string, modRole: string, adminRole: string, muteRole: string, disabledCommands: string, systemNotice: boolean, cleanup: boolean } };
+export type CurrGuildQuery = { __typename?: 'Query', currGuild?: { __typename?: 'Settings', id: number, guildId: string, prefix: string, userCount: string, modRole?: string | null | undefined, adminRole?: string | null | undefined, muteRole?: string | null | undefined, disabledCommands?: string | null | undefined, systemNotice?: boolean | null | undefined, cleanup?: boolean | null | undefined } | null | undefined };
+
+export type GuildTrafficQueryVariables = Exact<{
+  gid: Scalars['String'];
+}>;
+
+
+export type GuildTrafficQuery = { __typename?: 'Query', guildTraffic?: Array<{ __typename?: 'GuildTraffic', id: number, guildId: string, userId: string, username?: string | null | undefined, nickname?: string | null | undefined, joined: boolean, createdAt: string }> | null | undefined };
 
 export type GetGuildsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -135,6 +179,13 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'Users', id: string, username: string, avatar: string, discriminator: string, locale: string, premium_type: number, email: string } | null | undefined };
+
+export type StreamerRankingQueryVariables = Exact<{
+  gid: Scalars['String'];
+}>;
+
+
+export type StreamerRankingQuery = { __typename?: 'Query', streamerRanking?: Array<{ __typename?: 'StreamLeaderboard', id: number, userId: string, username: string, nickname: string, timeStreamed: string, updatedAt: string }> | null | undefined };
 
 
 export const LogoutDocument = gql`
@@ -150,7 +201,9 @@ export const CurrGuildDocument = gql`
     query currGuild($gid: String!) {
   currGuild(guildId: $gid) {
     id
+    guildId
     prefix
+    userCount
     modRole
     adminRole
     muteRole
@@ -163,6 +216,23 @@ export const CurrGuildDocument = gql`
 
 export function useCurrGuildQuery(options: Omit<Urql.UseQueryArgs<CurrGuildQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<CurrGuildQuery>({ query: CurrGuildDocument, ...options });
+};
+export const GuildTrafficDocument = gql`
+    query guildTraffic($gid: String!) {
+  guildTraffic(guildId: $gid) {
+    id
+    guildId
+    userId
+    username
+    nickname
+    joined
+    createdAt
+  }
+}
+    `;
+
+export function useGuildTrafficQuery(options: Omit<Urql.UseQueryArgs<GuildTrafficQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GuildTrafficQuery>({ query: GuildTrafficDocument, ...options });
 };
 export const GetGuildsDocument = gql`
     query getGuilds {
@@ -198,4 +268,20 @@ export const MeDocument = gql`
 
 export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });
+};
+export const StreamerRankingDocument = gql`
+    query streamerRanking($gid: String!) {
+  streamerRanking(guildId: $gid) {
+    id
+    userId
+    username
+    nickname
+    timeStreamed
+    updatedAt
+  }
+}
+    `;
+
+export function useStreamerRankingQuery(options: Omit<Urql.UseQueryArgs<StreamerRankingQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<StreamerRankingQuery>({ query: StreamerRankingDocument, ...options });
 };

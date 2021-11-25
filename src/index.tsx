@@ -7,7 +7,13 @@ import { ChakraProvider } from "@chakra-ui/react";
 import theme from "./theme";
 import { createClient, dedupExchange, fetchExchange, Provider } from "urql";
 import { Cache, cacheExchange, QueryInput } from "@urql/exchange-graphcache";
-import { GetGuildsDocument, GetGuildsQuery, LogoutMutation, MeDocument, MeQuery } from "./generated/graphql";
+import {
+  GetGuildsDocument,
+  GetGuildsQuery,
+  LogoutMutation,
+  MeDocument,
+  MeQuery,
+} from "./generated/graphql";
 
 function betterUpdateQuery<Result, Query>(
   cache: Cache,
@@ -18,14 +24,35 @@ function betterUpdateQuery<Result, Query>(
   return cache.updateQuery(qi, (data) => fn(result, data as any) as any);
 }
 const client = createClient({
-  
-  url: "http://192.168.1.14:4000/graphql",
+  url: process.env.REACT_APP_API_URL + "/graphql",
   fetchOptions: {
     credentials: "include",
   },
   exchanges: [
     dedupExchange,
     cacheExchange({
+      resolvers: {
+        Query: {
+          // guildTraffic: (data, args, cache, info) => {
+          //   console.log("cache exchage resolver query read fragment");    
+          //   const { guildId } = args as QueryCurrGuildArgs;
+          //   const result = cache.readFragment(
+          //     gql`
+          //       fragment _ on Settings {
+          //         id
+          //         guildId
+          //         userCount
+          //       }
+          //     `,
+          //     { id: 1},
+          //     {guildId: guildId }
+          //   );
+          //   console.log("result ? ", result);
+            
+          //   return result;
+          // },
+        },
+      },
       updates: {
         Mutation: {
           logout: (_result, args, cache, info) => {
@@ -39,7 +66,7 @@ const client = createClient({
                     me: null,
                   };
                 } else {
-                  return query
+                  return query;
                 }
               }
             );
@@ -53,7 +80,7 @@ const client = createClient({
                     guilds: null,
                   };
                 } else {
-                  return query
+                  return query;
                 }
               }
             );

@@ -6,8 +6,8 @@ import { Navbar } from "../components/Dashboard/Navbar";
 
 const LandingPage: FC = () => {
   function handleClick() {
-    const win = window.open(
-      `https://discord.com/api/oauth2/authorize?client_id=613073438902452239&permissions=8&redirect_uri=http%3A%2F%2F192.168.1.14%3A8080%2Fdashboard&scope=bot`,
+    window.open(
+      process.env.REACT_APP_INVITE_URL,
       "targetWindow",
       `toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=no,width=400,height=700`
     );

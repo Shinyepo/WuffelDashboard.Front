@@ -17,7 +17,7 @@ import {
 } from "../../generated/graphql";
 import { Server } from "../Server";
 import { MdOutlineSummarize } from "react-icons/md";
-import { IoSettingsOutline } from "react-icons/io5"
+import { IoSettingsOutline, IoTrophyOutline } from "react-icons/io5"
 import { BsShield } from "react-icons/bs"
 import { SideItem } from "./SideItem";
 
@@ -107,6 +107,11 @@ const Sidebar: FC<Props> = ({ meData, guildsData }) => {
                 url={`${url}/moderation`}
                 p="Moderation"
                 icon={BsShield}
+              />
+              <SideItem
+                url={`${url}/streamerranking`}
+                p="Streamer Ranking"
+                icon={IoTrophyOutline}
               />
             </Box>
             <Box

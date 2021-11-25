@@ -1,14 +1,21 @@
 import { FC } from "react";
 import { Route, Switch } from "react-router";
+import { CurrGuildQuery } from "../../../generated/graphql";
 import { Settings } from "./Settings";
+import { StreamerRanking } from "./StreamerRanking";
 import { Summary } from "./Summary";
 
-export const Main: FC = () => (
-    <>
-        <Switch>
-            <Route exact path="/playground/:id" component={Summary} />
-            <Route path="/playground/:id/summary" component={Summary} />
-            <Route path="/playground/:id/settings" component={Settings} />
-        </Switch>
-    </>
-)
+interface Props {
+  guildData: CurrGuildQuery | undefined;
+}
+
+export const Main: FC<Props> = ({ guildData }) => (
+  <>
+    <Switch>
+      <Route exact path="/playground/:id" component={() => <Summary count={guildData?.currGuild!.userCount} />} />
+      <Route path="/playground/:id/summary" component={() => <Summary count={guildData?.currGuild!.userCount} />} />
+      <Route path="/playground/:id/settings" component={Settings} />
+      <Route path="/playground/:id/streamerranking" component={StreamerRanking} />
+    </Switch>
+  </>
+);

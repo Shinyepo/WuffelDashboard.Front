@@ -1,0 +1,10 @@
+query streamerRanking($gid: String!){
+  streamerRanking(guildId:$gid) {
+    id
+    userId,
+    username,
+    nickname,
+    timeStreamed,
+    updatedAt
+  }
+}

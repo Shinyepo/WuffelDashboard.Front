@@ -1,0 +1,11 @@
+query guildTraffic($gid: String!) {
+  guildTraffic(guildId:$gid) {
+    id
+    guildId
+    userId
+    username
+    nickname
+    joined
+    createdAt
+  }
+}
