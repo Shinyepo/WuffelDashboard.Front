@@ -1,0 +1,17 @@
+query getLogSettings($gid:String!) {
+  getLogSettings(guildId: $gid) {
+    id
+    guildId
+    settings {
+      id
+      name
+      on
+      channel
+      ignored {
+        users
+        channels
+      }
+    }
+    updatedAt
+  }
+}

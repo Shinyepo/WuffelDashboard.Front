@@ -19,6 +19,7 @@ import { Server } from "../Server";
 import { MdOutlineSummarize } from "react-icons/md";
 import { IoSettingsOutline, IoTrophyOutline } from "react-icons/io5"
 import { BsShield } from "react-icons/bs"
+import { AiOutlineContainer }  from "react-icons/ai"
 import { SideItem } from "./SideItem";
 
 type Props = {
@@ -46,7 +47,7 @@ const Sidebar: FC<Props> = ({ meData, guildsData }) => {
     url = "/playground";
   }
   return (
-    <Box pos="fixed" inset="0">
+    <Box pos="fixed" left="0" bottom="0" top="0">
       <Box pos="fixed" bottom="0" left="0" top="0">
         <Box left="0" bottom="0" w="300px" h="100%">
           <Box
@@ -102,6 +103,11 @@ const Sidebar: FC<Props> = ({ meData, guildsData }) => {
                 url={`${url}/settings`}
                 p="Settings"
                 icon={IoSettingsOutline}
+              />
+              <SideItem
+                url={`${url}/logs`}
+                p="Logs"
+                icon={AiOutlineContainer}
               />
               <SideItem
                 url={`${url}/moderation`}

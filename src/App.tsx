@@ -19,7 +19,6 @@ const App: FC<Props> = ({ Component, pageProps }) => {
       <Switch>
         <Route exact path="/" component={LandingPage} />
         <Route path="/dashboard/:id?" component={Dashboard} />
-        <Route path="/playground/:id?" component={Dashboard} />
         <Route component={NoMatch} />
       </Switch>
     </Router>

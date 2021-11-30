@@ -8,8 +8,6 @@ import {
   useSetPrefixMutation,
 } from "../../../../generated/graphql";
 
-interface Props {}
-
 export const Prefix: FC = () => {
   const { id }: { id: string } = useParams();
   const [value, setValue] = useState("");
@@ -19,6 +17,7 @@ export const Prefix: FC = () => {
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) =>
     setValue(event.currentTarget.value);
+    
   const handleSubmit = async (event: MouseEvent) => {
     event.preventDefault();
     if (value.length > 4) return;

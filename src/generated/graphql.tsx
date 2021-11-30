@@ -37,6 +37,30 @@ export type GuildTraffic = {
   username?: Maybe<Scalars['String']>;
 };
 
+export type IgnoredLogObject = {
+  __typename?: 'IgnoredLogObject';
+  channels?: Maybe<Array<Scalars['String']>>;
+  users?: Maybe<Array<Scalars['String']>>;
+};
+
+export type LogObject = {
+  __typename?: 'LogObject';
+  channel?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  ignored?: Maybe<IgnoredLogObject>;
+  name: Scalars['String'];
+  on: Scalars['Boolean'];
+};
+
+export type LogSettings = {
+  __typename?: 'LogSettings';
+  createdAt: Scalars['String'];
+  guildId: Scalars['String'];
+  id: Scalars['Float'];
+  settings?: Maybe<Array<LogObject>>;
+  updatedAt: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createUser: Users;
@@ -58,6 +82,7 @@ export type MutationSetPrefixArgs = {
 export type Query = {
   __typename?: 'Query';
   currGuild?: Maybe<Settings>;
+  getLogSettings: LogSettings;
   getPrefix?: Maybe<Scalars['String']>;
   guildTraffic?: Maybe<Array<GuildTraffic>>;
   guilds?: Maybe<Array<DiscordGuilds>>;
@@ -71,6 +96,11 @@ export type Query = {
 
 
 export type QueryCurrGuildArgs = {
+  guildId: Scalars['String'];
+};
+
+
+export type QueryGetLogSettingsArgs = {
   guildId: Scalars['String'];
 };
 
@@ -184,6 +214,13 @@ export type CurrGuildQueryVariables = Exact<{
 
 export type CurrGuildQuery = { __typename?: 'Query', currGuild?: { __typename?: 'Settings', id: number, guildId: string, prefix: string, userCount: string, modRole?: string | null | undefined, adminRole?: string | null | undefined, muteRole?: string | null | undefined, disabledCommands?: string | null | undefined, systemNotice?: boolean | null | undefined, cleanup?: boolean | null | undefined } | null | undefined };
 
+export type GetLogSettingsQueryVariables = Exact<{
+  gid: Scalars['String'];
+}>;
+
+
+export type GetLogSettingsQuery = { __typename?: 'Query', getLogSettings: { __typename?: 'LogSettings', id: number, guildId: string, updatedAt: string, settings?: Array<{ __typename?: 'LogObject', id: string, name: string, on: boolean, channel?: string | null | undefined, ignored?: { __typename?: 'IgnoredLogObject', users?: Array<string> | null | undefined, channels?: Array<string> | null | undefined } | null | undefined }> | null | undefined } };
+
 export type GetPrefixQueryVariables = Exact<{
   gid: Scalars['String'];
 }>;
@@ -253,6 +290,29 @@ export const CurrGuildDocument = gql`
 
 export function useCurrGuildQuery(options: Omit<Urql.UseQueryArgs<CurrGuildQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<CurrGuildQuery>({ query: CurrGuildDocument, ...options });
+};
+export const GetLogSettingsDocument = gql`
+    query getLogSettings($gid: String!) {
+  getLogSettings(guildId: $gid) {
+    id
+    guildId
+    settings {
+      id
+      name
+      on
+      channel
+      ignored {
+        users
+        channels
+      }
+    }
+    updatedAt
+  }
+}
+    `;
+
+export function useGetLogSettingsQuery(options: Omit<Urql.UseQueryArgs<GetLogSettingsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetLogSettingsQuery>({ query: GetLogSettingsDocument, ...options });
 };
 export const GetPrefixDocument = gql`
     query getPrefix($gid: String!) {

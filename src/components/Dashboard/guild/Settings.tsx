@@ -7,8 +7,6 @@ export const Settings: FC = () => (
     <Flex
       flex={1}
       direction="row"
-    //   justifyContent="center"
-    //   position="relative"
       mt="60px" 
       ml="60px"
     >
