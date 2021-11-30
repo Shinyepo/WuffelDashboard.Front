@@ -39,7 +39,7 @@ export const StreamerLeaderboard: FC<Props> = () => {
             {!data?.streamerRanking
               ? null
               : data.streamerRanking!.map((x) => {
-                  return (<Tr>
+                  return (<Tr key={x.id}>
                     <Td>#1</Td>
                     <Td>
                       {x.username}

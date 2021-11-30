@@ -10,9 +10,12 @@ import { Cache, cacheExchange, QueryInput } from "@urql/exchange-graphcache";
 import {
   GetGuildsDocument,
   GetGuildsQuery,
+  GetPrefixDocument,
+  GetPrefixQuery,
   LogoutMutation,
   MeDocument,
   MeQuery,
+  SetPrefixMutation,
 } from "./generated/graphql";
 
 function betterUpdateQuery<Result, Query>(
@@ -55,6 +58,22 @@ const client = createClient({
       },
       updates: {
         Mutation: {
+          setPrefix: (_result, args, cache, info) => {
+            betterUpdateQuery<SetPrefixMutation, GetPrefixQuery>(
+              cache,
+              { query: GetPrefixDocument },
+              _result,
+               (result, query) => {
+                if (result.setPrefix) {
+                  return {
+                    getPrefix: result.setPrefix,
+                  };
+                } else {
+                  return query;
+                }
+              }
+            );
+          },
           logout: (_result, args, cache, info) => {
             betterUpdateQuery<LogoutMutation, MeQuery>(
               cache,

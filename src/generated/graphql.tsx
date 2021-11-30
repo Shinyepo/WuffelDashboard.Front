@@ -41,6 +41,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   createUser: Users;
   logout: Scalars['Boolean'];
+  setPrefix?: Maybe<Scalars['String']>;
 };
 
 
@@ -48,9 +49,16 @@ export type MutationCreateUserArgs = {
   options: UserInfo;
 };
 
+
+export type MutationSetPrefixArgs = {
+  guildId: Scalars['String'];
+  prefix: Scalars['String'];
+};
+
 export type Query = {
   __typename?: 'Query';
   currGuild?: Maybe<Settings>;
+  getPrefix?: Maybe<Scalars['String']>;
   guildTraffic?: Maybe<Array<GuildTraffic>>;
   guilds?: Maybe<Array<DiscordGuilds>>;
   loginUser?: Maybe<Users>;
@@ -63,6 +71,11 @@ export type Query = {
 
 
 export type QueryCurrGuildArgs = {
+  guildId: Scalars['String'];
+};
+
+
+export type QueryGetPrefixArgs = {
   guildId: Scalars['String'];
 };
 
@@ -156,12 +169,27 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 export type LogoutMutation = { __typename?: 'Mutation', logout: boolean };
 
+export type SetPrefixMutationVariables = Exact<{
+  gid: Scalars['String'];
+  prefix: Scalars['String'];
+}>;
+
+
+export type SetPrefixMutation = { __typename?: 'Mutation', setPrefix?: string | null | undefined };
+
 export type CurrGuildQueryVariables = Exact<{
   gid: Scalars['String'];
 }>;
 
 
 export type CurrGuildQuery = { __typename?: 'Query', currGuild?: { __typename?: 'Settings', id: number, guildId: string, prefix: string, userCount: string, modRole?: string | null | undefined, adminRole?: string | null | undefined, muteRole?: string | null | undefined, disabledCommands?: string | null | undefined, systemNotice?: boolean | null | undefined, cleanup?: boolean | null | undefined } | null | undefined };
+
+export type GetPrefixQueryVariables = Exact<{
+  gid: Scalars['String'];
+}>;
+
+
+export type GetPrefixQuery = { __typename?: 'Query', getPrefix?: string | null | undefined };
 
 export type GuildTrafficQueryVariables = Exact<{
   gid: Scalars['String'];
@@ -197,6 +225,15 @@ export const LogoutDocument = gql`
 export function useLogoutMutation() {
   return Urql.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument);
 };
+export const SetPrefixDocument = gql`
+    mutation setPrefix($gid: String!, $prefix: String!) {
+  setPrefix(guildId: $gid, prefix: $prefix)
+}
+    `;
+
+export function useSetPrefixMutation() {
+  return Urql.useMutation<SetPrefixMutation, SetPrefixMutationVariables>(SetPrefixDocument);
+};
 export const CurrGuildDocument = gql`
     query currGuild($gid: String!) {
   currGuild(guildId: $gid) {
@@ -216,6 +253,15 @@ export const CurrGuildDocument = gql`
 
 export function useCurrGuildQuery(options: Omit<Urql.UseQueryArgs<CurrGuildQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<CurrGuildQuery>({ query: CurrGuildDocument, ...options });
+};
+export const GetPrefixDocument = gql`
+    query getPrefix($gid: String!) {
+  getPrefix(guildId: $gid)
+}
+    `;
+
+export function useGetPrefixQuery(options: Omit<Urql.UseQueryArgs<GetPrefixQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetPrefixQuery>({ query: GetPrefixDocument, ...options });
 };
 export const GuildTrafficDocument = gql`
     query guildTraffic($gid: String!) {

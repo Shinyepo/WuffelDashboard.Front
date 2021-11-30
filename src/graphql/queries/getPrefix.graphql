@@ -1,0 +1,3 @@
+query getPrefix($gid: String!) {
+  getPrefix(guildId:$gid)
+}
