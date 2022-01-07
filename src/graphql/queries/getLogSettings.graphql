@@ -7,10 +7,6 @@ query getLogSettings($gid:String!) {
       name
       on
       channel
-      ignored {
-        users
-        channels
-      }
     }
     updatedAt
   }

@@ -1,0 +1,18 @@
+query getGuildChannels($gid: String!) {
+  getGuildChannels(guildId: $gid) {
+    id
+    type
+    name
+    position
+    parent_id
+    guild_id
+    channels {
+      id
+      type
+      name
+      position
+      parent_id
+      guild_id
+    }
+  }
+}

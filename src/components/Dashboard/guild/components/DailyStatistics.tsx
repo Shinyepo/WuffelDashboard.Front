@@ -1,5 +1,5 @@
 import { Box, Flex, Heading, HStack } from "@chakra-ui/layout";
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { useParams } from "react-router";
 import {
   GuildTraffic,
@@ -63,10 +63,10 @@ export const DailyStatistics: FC<Props> = ({ count }) => {
     const d = new Date();
     d.setDate(d.getDate() - 8);
 
-    const fakeDate = [
-      [1637535600000, 161],
-      [1637622000000, 30],
-    ];
+    // const fakeDate = [
+    //   [1637535600000, 161],
+    //   [1637622000000, 30],
+    // ];
 
     const fakeOptions: ApexOptions = {
       series: [

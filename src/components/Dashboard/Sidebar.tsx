@@ -44,7 +44,7 @@ const Sidebar: FC<Props> = ({ meData, guildsData }) => {
   };
   const parsed = parseInt(id, 10);
   if (!parsed) {
-    url = "/playground";
+    url = "/dashboard";
   }
   return (
     <Box pos="fixed" left="0" bottom="0" top="0">

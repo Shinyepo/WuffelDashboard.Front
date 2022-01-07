@@ -1,0 +1,3 @@
+mutation setLogSettings($settings: [settingsArgumentType!]!, $gid: String!) {
+  setLogSettings(guildId:$gid, settings: $settings)
+}

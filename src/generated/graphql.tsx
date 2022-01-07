@@ -14,6 +14,17 @@ export type Scalars = {
   Float: number;
 };
 
+export type DiscordChannelSelectList = {
+  __typename?: 'DiscordChannelSelectList';
+  channels?: Maybe<Array<DiscordChannelSelectList>>;
+  guild_id?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  parent_id?: Maybe<Scalars['String']>;
+  position?: Maybe<Scalars['Float']>;
+  type?: Maybe<Scalars['Float']>;
+};
+
 export type DiscordGuilds = {
   __typename?: 'DiscordGuilds';
   features: Array<Scalars['String']>;
@@ -65,12 +76,19 @@ export type Mutation = {
   __typename?: 'Mutation';
   createUser: Users;
   logout: Scalars['Boolean'];
+  setLogSettings: Scalars['Boolean'];
   setPrefix?: Maybe<Scalars['String']>;
 };
 
 
 export type MutationCreateUserArgs = {
   options: UserInfo;
+};
+
+
+export type MutationSetLogSettingsArgs = {
+  guildId: Scalars['String'];
+  settings: Array<SettingsArgumentType>;
 };
 
 
@@ -82,6 +100,7 @@ export type MutationSetPrefixArgs = {
 export type Query = {
   __typename?: 'Query';
   currGuild?: Maybe<Settings>;
+  getGuildChannels?: Maybe<Array<DiscordChannelSelectList>>;
   getLogSettings: LogSettings;
   getPrefix?: Maybe<Scalars['String']>;
   guildTraffic?: Maybe<Array<GuildTraffic>>;
@@ -96,6 +115,11 @@ export type Query = {
 
 
 export type QueryCurrGuildArgs = {
+  guildId: Scalars['String'];
+};
+
+
+export type QueryGetGuildChannelsArgs = {
   guildId: Scalars['String'];
 };
 
@@ -182,6 +206,13 @@ export type Users = {
   verified: Scalars['Boolean'];
 };
 
+export type SettingsArgumentType = {
+  channel?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  name: Scalars['String'];
+  on: Scalars['Boolean'];
+};
+
 export type UserError = {
   __typename?: 'userError';
   field: Scalars['String'];
@@ -199,6 +230,14 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 export type LogoutMutation = { __typename?: 'Mutation', logout: boolean };
 
+export type SetLogSettingsMutationVariables = Exact<{
+  settings: Array<SettingsArgumentType> | SettingsArgumentType;
+  gid: Scalars['String'];
+}>;
+
+
+export type SetLogSettingsMutation = { __typename?: 'Mutation', setLogSettings: boolean };
+
 export type SetPrefixMutationVariables = Exact<{
   gid: Scalars['String'];
   prefix: Scalars['String'];
@@ -214,12 +253,19 @@ export type CurrGuildQueryVariables = Exact<{
 
 export type CurrGuildQuery = { __typename?: 'Query', currGuild?: { __typename?: 'Settings', id: number, guildId: string, prefix: string, userCount: string, modRole?: string | null | undefined, adminRole?: string | null | undefined, muteRole?: string | null | undefined, disabledCommands?: string | null | undefined, systemNotice?: boolean | null | undefined, cleanup?: boolean | null | undefined } | null | undefined };
 
+export type GetGuildChannelsQueryVariables = Exact<{
+  gid: Scalars['String'];
+}>;
+
+
+export type GetGuildChannelsQuery = { __typename?: 'Query', getGuildChannels?: Array<{ __typename?: 'DiscordChannelSelectList', id: string, type?: number | null | undefined, name?: string | null | undefined, position?: number | null | undefined, parent_id?: string | null | undefined, guild_id?: string | null | undefined, channels?: Array<{ __typename?: 'DiscordChannelSelectList', id: string, type?: number | null | undefined, name?: string | null | undefined, position?: number | null | undefined, parent_id?: string | null | undefined, guild_id?: string | null | undefined }> | null | undefined }> | null | undefined };
+
 export type GetLogSettingsQueryVariables = Exact<{
   gid: Scalars['String'];
 }>;
 
 
-export type GetLogSettingsQuery = { __typename?: 'Query', getLogSettings: { __typename?: 'LogSettings', id: number, guildId: string, updatedAt: string, settings?: Array<{ __typename?: 'LogObject', id: string, name: string, on: boolean, channel?: string | null | undefined, ignored?: { __typename?: 'IgnoredLogObject', users?: Array<string> | null | undefined, channels?: Array<string> | null | undefined } | null | undefined }> | null | undefined } };
+export type GetLogSettingsQuery = { __typename?: 'Query', getLogSettings: { __typename?: 'LogSettings', id: number, guildId: string, updatedAt: string, settings?: Array<{ __typename?: 'LogObject', id: string, name: string, on: boolean, channel?: string | null | undefined }> | null | undefined } };
 
 export type GetPrefixQueryVariables = Exact<{
   gid: Scalars['String'];
@@ -262,6 +308,15 @@ export const LogoutDocument = gql`
 export function useLogoutMutation() {
   return Urql.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument);
 };
+export const SetLogSettingsDocument = gql`
+    mutation setLogSettings($settings: [settingsArgumentType!]!, $gid: String!) {
+  setLogSettings(guildId: $gid, settings: $settings)
+}
+    `;
+
+export function useSetLogSettingsMutation() {
+  return Urql.useMutation<SetLogSettingsMutation, SetLogSettingsMutationVariables>(SetLogSettingsDocument);
+};
 export const SetPrefixDocument = gql`
     mutation setPrefix($gid: String!, $prefix: String!) {
   setPrefix(guildId: $gid, prefix: $prefix)
@@ -291,6 +346,30 @@ export const CurrGuildDocument = gql`
 export function useCurrGuildQuery(options: Omit<Urql.UseQueryArgs<CurrGuildQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<CurrGuildQuery>({ query: CurrGuildDocument, ...options });
 };
+export const GetGuildChannelsDocument = gql`
+    query getGuildChannels($gid: String!) {
+  getGuildChannels(guildId: $gid) {
+    id
+    type
+    name
+    position
+    parent_id
+    guild_id
+    channels {
+      id
+      type
+      name
+      position
+      parent_id
+      guild_id
+    }
+  }
+}
+    `;
+
+export function useGetGuildChannelsQuery(options: Omit<Urql.UseQueryArgs<GetGuildChannelsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetGuildChannelsQuery>({ query: GetGuildChannelsDocument, ...options });
+};
 export const GetLogSettingsDocument = gql`
     query getLogSettings($gid: String!) {
   getLogSettings(guildId: $gid) {
@@ -301,10 +380,6 @@ export const GetLogSettingsDocument = gql`
       name
       on
       channel
-      ignored {
-        users
-        channels
-      }
     }
     updatedAt
   }
