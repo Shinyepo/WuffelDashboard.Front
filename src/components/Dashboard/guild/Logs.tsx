@@ -32,7 +32,7 @@ const DiscordEvents = [
   },
   {
     name: "threadEvents",
-    displayName: "Thread events",
+    displayName: "Thread Events",
     description: "Thread created, deleted and updated events.",
   },
   {
@@ -42,7 +42,7 @@ const DiscordEvents = [
   },
   {
     name: "roleEvents",
-    displayName: "Role events",
+    displayName: "Role Events",
     description: "Role created, deleted and updated events.",
   },
   {
@@ -57,18 +57,18 @@ const DiscordEvents = [
   },
   {
     name: "guildMemberEvents",
-    displayName: "Guild member events",
+    displayName: "Guild member Events",
     description:
       "Guild members avatar update, role update and nickname update events.",
   },
   {
     name: "guildTraffic",
-    displayName: "Guild traffic events",
+    displayName: "Guild traffic Events",
     description: "Guild members joined and left events.",
   },
   {
     name: "voiceEvents",
-    displayName: "Voice presence events",
+    displayName: "Voice presence Events",
     description: "Guild members joined, left and started streaming events.",
   },
 ];
