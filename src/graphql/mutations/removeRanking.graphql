@@ -1,0 +1,6 @@
+mutation removeRanking($id: String!) {
+  removeRanking(id:$id) {
+    success,
+    id
+  }
+}

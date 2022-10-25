@@ -28,48 +28,32 @@ const DiscordEvents = [
   {
     name: "messageEvents",
     displayName: "Message Events",
-    description: "Message deleted and updated events.",
-  },
-  {
-    name: "threadEvents",
-    displayName: "Thread Events",
-    description: "Thread created, deleted and updated events.",
+    description: "Message delete and update events.",
   },
   {
     name: "channelEvents",
     displayName: "Channel Events",
-    description: "Channel created, deleted and updated events.",
+    description: "Channel create, delete and update events.",
   },
   {
-    name: "roleEvents",
-    displayName: "Role Events",
-    description: "Role created, deleted and updated events.",
+    name: "userEvents",
+    displayName: "User Events",
+    description: "User avatar, role, name change events",
+  },
+  {
+    name: "voicePresenceEvents",
+    displayName: "Voice presence Events",
+    description: "User voice channel join, leave and start streaming events.",
   },
   {
     name: "emojiEvents",
     displayName: "Emoji Events",
-    description: "Emoji created, deleted and updated events.",
+    description: "Emoji create, delete and update events.",
   },
   {
-    name: "guildBanEvents",
-    displayName: "Guild bans and kicks Events",
-    description: "Guild bans, unbans and kicks events.",
-  },
-  {
-    name: "guildMemberEvents",
-    displayName: "Guild member Events",
-    description:
-      "Guild members avatar update, role update and nickname update events.",
-  },
-  {
-    name: "guildTraffic",
-    displayName: "Guild traffic Events",
-    description: "Guild members joined and left events.",
-  },
-  {
-    name: "voiceEvents",
-    displayName: "Voice presence Events",
-    description: "Guild members joined, left and started streaming events.",
+    name: "guildEvents",
+    displayName: "Server Events",
+    description: "Member ban, invite create and server settings change events.",
   },
 ];
 
@@ -157,9 +141,9 @@ export const Logs: FC = () => {
             <Grid templateColumns="repeat(3, 2fr)" gap={4}>
               {DiscordEvents.map((x, idx) => {
                 return (
-                  <Box w="100%" mt="5">
+                  <Box w="100%" mt="5" key={idx}>
                     <FormControl id={x.name} key={idx} maxW="400px">
-                      <Tooltip label={x.description} placement="bottom">
+                      <Tooltip label={x.description} placement="bottom-start">
                         <FormLabel
                           d="inline"
                           htmlFor={x.name}

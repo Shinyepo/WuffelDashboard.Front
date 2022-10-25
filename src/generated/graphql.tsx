@@ -76,6 +76,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   createUser: Users;
   logout: Scalars['Boolean'];
+  removeRanking: RrResponse;
   setLogSettings: Scalars['Boolean'];
   setPrefix?: Maybe<Scalars['String']>;
 };
@@ -83,6 +84,11 @@ export type Mutation = {
 
 export type MutationCreateUserArgs = {
   options: UserInfo;
+};
+
+
+export type MutationRemoveRankingArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -155,10 +161,12 @@ export type QueryUserArgs = {
 
 export type Settings = {
   __typename?: 'Settings';
+  active: Scalars['Boolean'];
   adminRole?: Maybe<Scalars['String']>;
   cleanup?: Maybe<Scalars['Boolean']>;
   disabledCommands?: Maybe<Scalars['String']>;
   guildId: Scalars['String'];
+  guildRole: Scalars['String'];
   id: Scalars['Float'];
   modRole?: Maybe<Scalars['String']>;
   muteRole?: Maybe<Scalars['String']>;
@@ -172,7 +180,7 @@ export type StreamLeaderboard = {
   createdAt: Scalars['String'];
   guildId: Scalars['String'];
   id: Scalars['Float'];
-  nickname: Scalars['String'];
+  nickname?: Maybe<Scalars['String']>;
   timeStreamed: Scalars['String'];
   updatedAt: Scalars['String'];
   userId: Scalars['String'];
@@ -199,11 +207,17 @@ export type Users = {
   id: Scalars['String'];
   locale: Scalars['String'];
   mfa_enabled: Scalars['Boolean'];
-  premium_type: Scalars['Float'];
+  premium_type?: Maybe<Scalars['Float']>;
   public_flags: Scalars['Float'];
   updatedAt: Scalars['String'];
   username: Scalars['String'];
   verified: Scalars['Boolean'];
+};
+
+export type RrResponse = {
+  __typename?: 'rrResponse';
+  id: Scalars['String'];
+  success: Scalars['Boolean'];
 };
 
 export type SettingsArgumentType = {
@@ -229,6 +243,13 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 
 export type LogoutMutation = { __typename?: 'Mutation', logout: boolean };
+
+export type RemoveRankingMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type RemoveRankingMutation = { __typename?: 'Mutation', removeRanking: { __typename?: 'rrResponse', success: boolean, id: string } };
 
 export type SetLogSettingsMutationVariables = Exact<{
   settings: Array<SettingsArgumentType> | SettingsArgumentType;
@@ -289,14 +310,14 @@ export type GetGuildsQuery = { __typename?: 'Query', guilds?: Array<{ __typename
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'Users', id: string, username: string, avatar: string, discriminator: string, locale: string, premium_type: number, email: string } | null | undefined };
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'Users', id: string, username: string, avatar: string, discriminator: string, locale: string, premium_type?: number | null | undefined, email: string } | null | undefined };
 
 export type StreamerRankingQueryVariables = Exact<{
   gid: Scalars['String'];
 }>;
 
 
-export type StreamerRankingQuery = { __typename?: 'Query', streamerRanking?: Array<{ __typename?: 'StreamLeaderboard', id: number, userId: string, username: string, nickname: string, timeStreamed: string, updatedAt: string }> | null | undefined };
+export type StreamerRankingQuery = { __typename?: 'Query', streamerRanking?: Array<{ __typename?: 'StreamLeaderboard', id: number, userId: string, guildId: string, username: string, nickname?: string | null | undefined, timeStreamed: string, updatedAt: string, createdAt: string }> | null | undefined };
 
 
 export const LogoutDocument = gql`
@@ -307,6 +328,18 @@ export const LogoutDocument = gql`
 
 export function useLogoutMutation() {
   return Urql.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument);
+};
+export const RemoveRankingDocument = gql`
+    mutation removeRanking($id: String!) {
+  removeRanking(id: $id) {
+    success
+    id
+  }
+}
+    `;
+
+export function useRemoveRankingMutation() {
+  return Urql.useMutation<RemoveRankingMutation, RemoveRankingMutationVariables>(RemoveRankingDocument);
 };
 export const SetLogSettingsDocument = gql`
     mutation setLogSettings($settings: [settingsArgumentType!]!, $gid: String!) {
@@ -455,10 +488,12 @@ export const StreamerRankingDocument = gql`
   streamerRanking(guildId: $gid) {
     id
     userId
+    guildId
     username
     nickname
     timeStreamed
     updatedAt
+    createdAt
   }
 }
     `;

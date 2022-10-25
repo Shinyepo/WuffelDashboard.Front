@@ -2,9 +2,11 @@ query streamerRanking($gid: String!){
   streamerRanking(guildId:$gid) {
     id
     userId,
+    guildId,
     username,
     nickname,
     timeStreamed,
-    updatedAt
+    updatedAt,
+    createdAt
   }
 }
