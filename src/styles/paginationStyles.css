@@ -1,0 +1,41 @@
+.page,
+.break {
+    float: left;
+    padding: 15px;
+}
+
+.break, .page a {
+    color: var(--chakra-colors-gray-500);
+}
+
+.page, .selected a {
+    color: white;
+}
+
+.next,
+.previous {
+    display: flex;
+    align-items: center;
+    float: left;
+    padding: 15px;
+    color: white;
+}
+
+.disabled {
+    color: var(--chakra-colors-gray-500)
+}
+
+.next,
+.previous a {
+    color: var(--chakra-colors-white-100);
+
+}
+
+.container {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+}

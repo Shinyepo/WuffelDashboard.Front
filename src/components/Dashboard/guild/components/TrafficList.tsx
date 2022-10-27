@@ -8,24 +8,80 @@ import {
   Tr,
   TableCaption,
 } from "@chakra-ui/react";
-import { FC } from "react";
-import { GuildTrafficQuery } from "../../../../generated/graphql";
+import { FC, useEffect, useState } from "react";
+import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
+import ReactPaginate from "react-paginate";
+import { GuildTraffic, GuildTrafficQuery } from "../../../../generated/graphql";
 import { FetchingData } from "../../FetchingData";
 import { NoData } from "../../NoData";
+import "../../../../styles/paginationStyles.css";
 
 interface Props {
   trafficData: GuildTrafficQuery | undefined;
 }
+interface ItemsProps {
+  currentItems: GuildTraffic[] | null | undefined;
+  offset: number;
+}
+
+const Items: FC<ItemsProps> = ({ currentItems, offset }) => {
+  return (
+    <>
+      {currentItems &&
+        currentItems.map((x, idx) => (
+          <>
+            <Tr key={idx} color={x.joined ? "green.500" : "red.500"}>
+              <Td>{idx + 1 + offset}</Td>
+              <Td>{x.nickname ? x.nickname : x.username}</Td>
+              <Td>{new Date(x.createdAt).toLocaleString()}</Td>
+              <Td>{x.joined ? "joined" : "left"}</Td>
+            </Tr>
+          </>
+        ))}
+    </>
+  );
+};
 
 export const TrafficList: FC<Props> = ({ trafficData }) => {
+  const [currentItems, setCurrentItems] = useState<GuildTraffic[] | null>();
+  const [pageCount, setPageCount] = useState(0);
+  const [itemOffset, setItemOffset] = useState(0);
+  const itemsPerPage = 15;
   let body = <FetchingData />;
 
+  useEffect(() => {
+    const endOffset = itemOffset + itemsPerPage;
+    console.log(`Loading items from ${itemOffset} to ${endOffset}`);
+    if (trafficData && trafficData.guildTraffic) {
+      setCurrentItems(
+        trafficData.guildTraffic.reverse().slice(itemOffset, endOffset)
+      );
+      setPageCount(Math.ceil(trafficData.guildTraffic.length / itemsPerPage));
+    }
+  }, [itemOffset, itemsPerPage, trafficData?.guildTraffic]);
   if (!trafficData || !trafficData.guildTraffic) return (body = <NoData />);
+
+  const handlePageClick = (event: any) => {
+    if (trafficData && trafficData.guildTraffic) {
+      const newOffset =
+        (event.selected * itemsPerPage) % trafficData?.guildTraffic.length;
+      console.log(
+        `User requested page number ${event.selected}, which is offset ${newOffset}`
+      );
+      setItemOffset(newOffset);
+    }
+  };
 
   body = (
     <TableContainer>
       <Table variant="simple" colorScheme="whiteAlpha">
-        {trafficData.guildTraffic.length < 1 ? <TableCaption><NoData /></TableCaption> : ""}
+        {trafficData.guildTraffic.length < 1 ? (
+          <TableCaption>
+            <NoData />
+          </TableCaption>
+        ) : (
+          ""
+        )}
         <Thead>
           <Tr>
             <Th>#</Th>
@@ -35,20 +91,23 @@ export const TrafficList: FC<Props> = ({ trafficData }) => {
           </Tr>
         </Thead>
         <Tbody>
-          {trafficData.guildTraffic.map((x, idx) => {
-            return (
-              <>
-                <Tr key={idx} color={x.joined ? "green.500" : "red.500"}>
-                  <Td>{trafficData.guildTraffic!.length - idx}</Td>
-                  <Td>{x.nickname ? x.nickname : x.username}</Td>
-                  <Td>{new Date(x.createdAt).toLocaleString()}</Td>
-                  <Td>{x.joined ? "joined" : "left"}</Td>
-                </Tr>
-              </>
-            );
-          })}
+          <Items currentItems={currentItems} offset={itemOffset} />
         </Tbody>
       </Table>
+      <ReactPaginate
+        breakLabel="..."
+        nextLabel={<BsArrowRight />}
+        onPageChange={handlePageClick}
+        pageRangeDisplayed={1}
+        pageCount={pageCount}
+        previousLabel={<BsArrowLeft />}
+        renderOnZeroPageCount={undefined}
+        nextClassName="next"
+        previousClassName="previous"
+        containerClassName="container"
+        pageClassName="page"
+        breakClassName="break"
+      />
     </TableContainer>
   );
 
