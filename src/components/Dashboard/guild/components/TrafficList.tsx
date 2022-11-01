@@ -51,7 +51,6 @@ export const TrafficList: FC<Props> = ({ trafficData }) => {
 
   useEffect(() => {
     const endOffset = itemOffset + itemsPerPage;
-    console.log(`Loading items from ${itemOffset} to ${endOffset}`);
     if (trafficData && trafficData.guildTraffic) {
       setCurrentItems(
         trafficData.guildTraffic.reverse().slice(itemOffset, endOffset)
@@ -65,9 +64,6 @@ export const TrafficList: FC<Props> = ({ trafficData }) => {
     if (trafficData && trafficData.guildTraffic) {
       const newOffset =
         (event.selected * itemsPerPage) % trafficData?.guildTraffic.length;
-      console.log(
-        `User requested page number ${event.selected}, which is offset ${newOffset}`
-      );
       setItemOffset(newOffset);
     }
   };
@@ -76,9 +72,7 @@ export const TrafficList: FC<Props> = ({ trafficData }) => {
     <TableContainer>
       <Table variant="simple" colorScheme="whiteAlpha">
         {trafficData.guildTraffic.length < 1 ? (
-          <TableCaption>
-            <NoData />
-          </TableCaption>
+          <TableCaption fontSize="2xl" pb={5}>No Data...</TableCaption>
         ) : (
           ""
         )}
@@ -94,20 +88,22 @@ export const TrafficList: FC<Props> = ({ trafficData }) => {
           <Items currentItems={currentItems} offset={itemOffset} />
         </Tbody>
       </Table>
-      <ReactPaginate
-        breakLabel="..."
-        nextLabel={<BsArrowRight />}
-        onPageChange={handlePageClick}
-        pageRangeDisplayed={1}
-        pageCount={pageCount}
-        previousLabel={<BsArrowLeft />}
-        renderOnZeroPageCount={undefined}
-        nextClassName="next"
-        previousClassName="previous"
-        containerClassName="container"
-        pageClassName="page"
-        breakClassName="break"
-      />
+      {trafficData.guildTraffic.length > 0 && (
+        <ReactPaginate
+          breakLabel="..."
+          nextLabel={<BsArrowRight />}
+          onPageChange={handlePageClick}
+          pageRangeDisplayed={1}
+          pageCount={pageCount}
+          previousLabel={<BsArrowLeft />}
+          renderOnZeroPageCount={undefined}
+          nextClassName="next"
+          previousClassName="previous"
+          containerClassName="container"
+          pageClassName="page"
+          breakClassName="break"
+        />
+      )}
     </TableContainer>
   );
 
