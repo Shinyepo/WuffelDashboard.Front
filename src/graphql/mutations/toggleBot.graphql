@@ -1,0 +1,3 @@
+mutation toggleBot($id: String!, $state: Boolean!) {
+  toggleBot(guildId:$id, state:$state)
+}

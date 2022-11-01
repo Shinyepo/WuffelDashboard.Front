@@ -12,6 +12,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
+  DateTime: any;
 };
 
 export type DiscordChannelSelectList = {
@@ -39,7 +41,7 @@ export type DiscordGuilds = {
 
 export type GuildTraffic = {
   __typename?: 'GuildTraffic';
-  createdAt: Scalars['String'];
+  createdAt: Scalars['DateTime'];
   guildId: Scalars['String'];
   id: Scalars['Float'];
   joined: Scalars['Boolean'];
@@ -79,6 +81,7 @@ export type Mutation = {
   removeRanking: RrResponse;
   setLogSettings: Scalars['Boolean'];
   setPrefix?: Maybe<Scalars['String']>;
+  toggleBot: Scalars['Boolean'];
 };
 
 
@@ -101,6 +104,12 @@ export type MutationSetLogSettingsArgs = {
 export type MutationSetPrefixArgs = {
   guildId: Scalars['String'];
   prefix: Scalars['String'];
+};
+
+
+export type MutationToggleBotArgs = {
+  guildId: Scalars['String'];
+  state: Scalars['Boolean'];
 };
 
 export type Query = {
@@ -267,12 +276,20 @@ export type SetPrefixMutationVariables = Exact<{
 
 export type SetPrefixMutation = { __typename?: 'Mutation', setPrefix?: string | null | undefined };
 
+export type ToggleBotMutationVariables = Exact<{
+  id: Scalars['String'];
+  state: Scalars['Boolean'];
+}>;
+
+
+export type ToggleBotMutation = { __typename?: 'Mutation', toggleBot: boolean };
+
 export type CurrGuildQueryVariables = Exact<{
   gid: Scalars['String'];
 }>;
 
 
-export type CurrGuildQuery = { __typename?: 'Query', currGuild?: { __typename?: 'Settings', id: number, guildId: string, prefix: string, userCount: string, modRole?: string | null | undefined, adminRole?: string | null | undefined, muteRole?: string | null | undefined, disabledCommands?: string | null | undefined, systemNotice?: boolean | null | undefined, cleanup?: boolean | null | undefined } | null | undefined };
+export type CurrGuildQuery = { __typename?: 'Query', currGuild?: { __typename?: 'Settings', id: number, guildId: string, prefix: string, userCount: string, modRole?: string | null | undefined, adminRole?: string | null | undefined, muteRole?: string | null | undefined, disabledCommands?: string | null | undefined, systemNotice?: boolean | null | undefined, cleanup?: boolean | null | undefined, active: boolean } | null | undefined };
 
 export type GetGuildChannelsQueryVariables = Exact<{
   gid: Scalars['String'];
@@ -300,7 +317,7 @@ export type GuildTrafficQueryVariables = Exact<{
 }>;
 
 
-export type GuildTrafficQuery = { __typename?: 'Query', guildTraffic?: Array<{ __typename?: 'GuildTraffic', id: number, guildId: string, userId: string, username?: string | null | undefined, nickname?: string | null | undefined, joined: boolean, createdAt: string }> | null | undefined };
+export type GuildTrafficQuery = { __typename?: 'Query', guildTraffic?: Array<{ __typename?: 'GuildTraffic', id: number, guildId: string, userId: string, username?: string | null | undefined, nickname?: string | null | undefined, joined: boolean, createdAt: any }> | null | undefined };
 
 export type GetGuildsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -359,6 +376,15 @@ export const SetPrefixDocument = gql`
 export function useSetPrefixMutation() {
   return Urql.useMutation<SetPrefixMutation, SetPrefixMutationVariables>(SetPrefixDocument);
 };
+export const ToggleBotDocument = gql`
+    mutation toggleBot($id: String!, $state: Boolean!) {
+  toggleBot(guildId: $id, state: $state)
+}
+    `;
+
+export function useToggleBotMutation() {
+  return Urql.useMutation<ToggleBotMutation, ToggleBotMutationVariables>(ToggleBotDocument);
+};
 export const CurrGuildDocument = gql`
     query currGuild($gid: String!) {
   currGuild(guildId: $gid) {
@@ -372,6 +398,7 @@ export const CurrGuildDocument = gql`
     disabledCommands
     systemNotice
     cleanup
+    active
   }
 }
     `;

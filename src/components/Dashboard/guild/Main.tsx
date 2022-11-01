@@ -7,7 +7,7 @@ import { StreamerRanking } from "./StreamerRanking";
 import { Summary } from "./Summary";
 
 interface Props {
-  guildData: CurrGuildQuery | undefined;
+  guildData: CurrGuildQuery;
 }
 
 export const Main: FC<Props> = ({ guildData }) => (
@@ -15,7 +15,7 @@ export const Main: FC<Props> = ({ guildData }) => (
     <Switch>
       <Route exact path="/dashboard/:id" component={() => <Summary count={guildData?.currGuild!.userCount} />} />
       <Route path="/dashboard/:id/summary" component={() => <Summary count={guildData?.currGuild!.userCount} />} />
-      <Route path="/dashboard/:id/settings" component={Settings} />
+      <Route path="/dashboard/:id/settings" component={() => <Settings settings={guildData} />}  />
       <Route path="/dashboard/:id/logs" component={Logs} />
       <Route path="/dashboard/:id/streamerranking" component={StreamerRanking} />
     </Switch>
