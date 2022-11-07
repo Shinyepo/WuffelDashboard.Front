@@ -1,20 +1,50 @@
-import { Box, Button, Divider, Flex, Heading, Input } from "@chakra-ui/react";
-import { FC, useState } from "react";
-import { OptionProps, Options } from "react-select";
-import { GetGuildChannelsQuery } from "../../../../generated/graphql";
-import { SelectOption } from "../../../../types";
+import {
+  Box,
+  Button,
+  Divider,
+  Heading,
+  useToast,
+} from "@chakra-ui/react";
+import { FC, useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import {
+  GetGuildChannelsQuery,
+  IgnoredLogObject,
+  useSetIgnoredSettingsMutation,
+} from "../../../../generated/graphql";
+import { IgnoreType, SelectOption } from "../../../../types";
+import {
+  failedRequest,
+  successfulRequest,
+} from "../../../../utilities/Toaster";
 import { MultiSelect } from "./MultiSelect";
 
 interface Props {
-  title: string;
+  event: string;
+  ignoreType: IgnoreType;
+  displayName: string;
   channelList: GetGuildChannelsQuery;
+  ignored?: IgnoredLogObject;
 }
 
-export const AdvancedLogConfiguration: FC<Props> = ({ title, channelList }) => {
+export const AdvancedLogConfiguration: FC<Props> = ({
+  event,
+  ignored,
+  displayName,
+  ignoreType,
+  channelList,
+}) => {
+  const { id }: { id: string } = useParams();
   const [loading, setLoading] = useState(false);
   const multiOptions = new Array<SelectOption>();
+  const [selectedChannels, setSelectedChannels] = useState<SelectOption[]>();
+  const [selectedUsers, setSelectedUsers] = useState<SelectOption[]>();
+  const [, saveSettings] = useSetIgnoredSettingsMutation();
+  const toast = useToast();
 
-  channelList.getGuildChannels?.forEach((x, idx) => {
+  const defaultValue = new Array<SelectOption>();
+
+  channelList.getGuildChannels?.forEach((x) => {
     const option = {
       label: x.name,
       value: x.id,
@@ -22,29 +52,83 @@ export const AdvancedLogConfiguration: FC<Props> = ({ title, channelList }) => {
     } as SelectOption;
     multiOptions.push(option);
 
-    x.channels?.forEach((a, indx) => {
+    x.channels?.forEach((a) => {
       const option = {
         label: a.name,
         value: a.id,
         isDisabled: false,
       } as SelectOption;
+
+      if (ignored) {
+        const found = ignored.channels?.find((x) => x === a.id);
+        if (found) {
+          defaultValue.push(option);
+        }
+      }
       multiOptions.push(option);
     });
   });
-  console.log(multiOptions);
 
+  const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    setLoading(true);
+    const channels = selectedChannels?.map((x) => x.value);
+    const users = selectedUsers?.map((x) => x.value);
+    const res = await saveSettings({
+      event: e.currentTarget.name,
+      id,
+      settings: {
+        channels,
+        users,
+      },
+    });
+    setLoading(false);
+    if (!res) return failedRequest(toast);
+    return successfulRequest(toast);
+  };
 
   return (
-    <Flex flex={1} direction="row" m="60px">
-      <Box bg="gray.700" p={5}>
-        <Heading>{title}</Heading>
+    <Box mt="30px" minW="400px">
+      <Box pb="20px" bg="gray.700" p={5}>
+        <Heading>{displayName}</Heading>
         <Divider />
-        <MultiSelect channelList={multiOptions} />
+        {ignoreType === IgnoreType.channel || ignoreType === IgnoreType.all ? (
+          <Box mt="10px">
+            <Heading size="md" my="5px">
+              Channels to ignore
+            </Heading>
+            <MultiSelect
+              setSelected={setSelectedChannels}
+              type="channel"
+              defaultValue={defaultValue}
+              channelList={multiOptions}
+            />
+          </Box>
+        ) : null}
+        {ignoreType === IgnoreType.user || ignoreType === IgnoreType.all ? (
+          <Box mt="10px">
+            <Heading my="5px" size="md">
+              Users to ignore
+            </Heading>
+            <MultiSelect
+              setSelected={setSelectedUsers}
+              type="user"
+              channelList={multiOptions}
+            />
+          </Box>
+        ) : null}
 
-        <Button isLoading={loading} colorScheme="green" float="right" mt="20px">
+        <Button
+          name={event}
+          isLoading={loading}
+          onClick={handleClick}
+          colorScheme="green"
+          mt="20px"
+          float="right"
+        >
           Save
         </Button>
+        <Box style={{ clear: "both" }}></Box>
       </Box>
-    </Flex>
+    </Box>
   );
 };

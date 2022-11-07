@@ -56,10 +56,24 @@ export type IgnoredLogObject = {
   users?: Maybe<Array<Scalars['String']>>;
 };
 
+export type IgnoredLogObjectInput = {
+  channels?: Maybe<Array<Scalars['String']>>;
+  users?: Maybe<Array<Scalars['String']>>;
+};
+
+export type LogActivity = {
+  __typename?: 'LogActivity';
+  activity: Scalars['String'];
+  activityType: Scalars['Boolean'];
+  createdAt: Scalars['DateTime'];
+  guildId: Scalars['String'];
+  userId: Scalars['String'];
+};
+
 export type LogObject = {
   __typename?: 'LogObject';
   channel?: Maybe<Scalars['String']>;
-  id: Scalars['String'];
+  id: Scalars['Float'];
   ignored?: Maybe<IgnoredLogObject>;
   name: Scalars['String'];
   on: Scalars['Boolean'];
@@ -79,6 +93,7 @@ export type Mutation = {
   createUser: Users;
   logout: Scalars['Boolean'];
   removeRanking: RrResponse;
+  setIgnoredSettings: Scalars['Boolean'];
   setLogSettings: Scalars['Boolean'];
   setPrefix?: Maybe<Scalars['String']>;
   toggleBot: Scalars['Boolean'];
@@ -91,7 +106,15 @@ export type MutationCreateUserArgs = {
 
 
 export type MutationRemoveRankingArgs = {
+  guildId: Scalars['String'];
   id: Scalars['String'];
+};
+
+
+export type MutationSetIgnoredSettingsArgs = {
+  event: Scalars['String'];
+  guildId: Scalars['String'];
+  settings: IgnoredLogObjectInput;
 };
 
 
@@ -115,6 +138,7 @@ export type MutationToggleBotArgs = {
 export type Query = {
   __typename?: 'Query';
   currGuild?: Maybe<Settings>;
+  getActivity: Array<LogActivity>;
   getGuildChannels?: Maybe<Array<DiscordChannelSelectList>>;
   getLogSettings: LogSettings;
   getPrefix?: Maybe<Scalars['String']>;
@@ -130,6 +154,11 @@ export type Query = {
 
 
 export type QueryCurrGuildArgs = {
+  guildId: Scalars['String'];
+};
+
+
+export type QueryGetActivityArgs = {
   guildId: Scalars['String'];
 };
 
@@ -213,12 +242,13 @@ export type Users = {
   email: Scalars['String'];
   flags: Scalars['Float'];
   guilds?: Maybe<Array<DiscordGuilds>>;
-  id: Scalars['String'];
+  id: Scalars['Float'];
   locale: Scalars['String'];
   mfa_enabled: Scalars['Boolean'];
   premium_type?: Maybe<Scalars['Float']>;
   public_flags: Scalars['Float'];
   updatedAt: Scalars['String'];
+  userId: Scalars['String'];
   username: Scalars['String'];
   verified: Scalars['Boolean'];
 };
@@ -231,7 +261,8 @@ export type RrResponse = {
 
 export type SettingsArgumentType = {
   channel?: Maybe<Scalars['String']>;
-  id: Scalars['String'];
+  id: Scalars['Float'];
+  ignored?: Maybe<IgnoredLogObjectInput>;
   name: Scalars['String'];
   on: Scalars['Boolean'];
 };
@@ -255,10 +286,20 @@ export type LogoutMutation = { __typename?: 'Mutation', logout: boolean };
 
 export type RemoveRankingMutationVariables = Exact<{
   id: Scalars['String'];
+  guildId: Scalars['String'];
 }>;
 
 
 export type RemoveRankingMutation = { __typename?: 'Mutation', removeRanking: { __typename?: 'rrResponse', success: boolean, id: string } };
+
+export type SetIgnoredSettingsMutationVariables = Exact<{
+  id: Scalars['String'];
+  event: Scalars['String'];
+  settings: IgnoredLogObjectInput;
+}>;
+
+
+export type SetIgnoredSettingsMutation = { __typename?: 'Mutation', setIgnoredSettings: boolean };
 
 export type SetLogSettingsMutationVariables = Exact<{
   settings: Array<SettingsArgumentType> | SettingsArgumentType;
@@ -291,6 +332,13 @@ export type CurrGuildQueryVariables = Exact<{
 
 export type CurrGuildQuery = { __typename?: 'Query', currGuild?: { __typename?: 'Settings', id: number, guildId: string, prefix: string, userCount: string, modRole?: string | null | undefined, adminRole?: string | null | undefined, muteRole?: string | null | undefined, disabledCommands?: string | null | undefined, systemNotice?: boolean | null | undefined, cleanup?: boolean | null | undefined, active: boolean } | null | undefined };
 
+export type GetActivityQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetActivityQuery = { __typename?: 'Query', getActivity: Array<{ __typename?: 'LogActivity', userId: string, activity: string, activityType: boolean, createdAt: any }> };
+
 export type GetGuildChannelsQueryVariables = Exact<{
   gid: Scalars['String'];
 }>;
@@ -303,7 +351,7 @@ export type GetLogSettingsQueryVariables = Exact<{
 }>;
 
 
-export type GetLogSettingsQuery = { __typename?: 'Query', getLogSettings: { __typename?: 'LogSettings', id: number, guildId: string, updatedAt: string, settings?: Array<{ __typename?: 'LogObject', id: string, name: string, on: boolean, channel?: string | null | undefined }> | null | undefined } };
+export type GetLogSettingsQuery = { __typename?: 'Query', getLogSettings: { __typename?: 'LogSettings', id: number, guildId: string, updatedAt: string, settings?: Array<{ __typename?: 'LogObject', id: number, name: string, on: boolean, channel?: string | null | undefined, ignored?: { __typename?: 'IgnoredLogObject', users?: Array<string> | null | undefined, channels?: Array<string> | null | undefined } | null | undefined }> | null | undefined } };
 
 export type GetPrefixQueryVariables = Exact<{
   gid: Scalars['String'];
@@ -327,7 +375,7 @@ export type GetGuildsQuery = { __typename?: 'Query', guilds?: Array<{ __typename
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'Users', id: string, username: string, avatar: string, discriminator: string, locale: string, premium_type?: number | null | undefined, email: string } | null | undefined };
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'Users', userId: string, username: string, avatar: string, discriminator: string, locale: string, premium_type?: number | null | undefined, email: string } | null | undefined };
 
 export type StreamerRankingQueryVariables = Exact<{
   gid: Scalars['String'];
@@ -347,8 +395,8 @@ export function useLogoutMutation() {
   return Urql.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument);
 };
 export const RemoveRankingDocument = gql`
-    mutation removeRanking($id: String!) {
-  removeRanking(id: $id) {
+    mutation removeRanking($id: String!, $guildId: String!) {
+  removeRanking(id: $id, guildId: $guildId) {
     success
     id
   }
@@ -357,6 +405,15 @@ export const RemoveRankingDocument = gql`
 
 export function useRemoveRankingMutation() {
   return Urql.useMutation<RemoveRankingMutation, RemoveRankingMutationVariables>(RemoveRankingDocument);
+};
+export const SetIgnoredSettingsDocument = gql`
+    mutation setIgnoredSettings($id: String!, $event: String!, $settings: IgnoredLogObjectInput!) {
+  setIgnoredSettings(guildId: $id, event: $event, settings: $settings)
+}
+    `;
+
+export function useSetIgnoredSettingsMutation() {
+  return Urql.useMutation<SetIgnoredSettingsMutation, SetIgnoredSettingsMutationVariables>(SetIgnoredSettingsDocument);
 };
 export const SetLogSettingsDocument = gql`
     mutation setLogSettings($settings: [settingsArgumentType!]!, $gid: String!) {
@@ -406,6 +463,20 @@ export const CurrGuildDocument = gql`
 export function useCurrGuildQuery(options: Omit<Urql.UseQueryArgs<CurrGuildQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<CurrGuildQuery>({ query: CurrGuildDocument, ...options });
 };
+export const GetActivityDocument = gql`
+    query getActivity($id: String!) {
+  getActivity(guildId: $id) {
+    userId
+    activity
+    activityType
+    createdAt
+  }
+}
+    `;
+
+export function useGetActivityQuery(options: Omit<Urql.UseQueryArgs<GetActivityQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetActivityQuery>({ query: GetActivityDocument, ...options });
+};
 export const GetGuildChannelsDocument = gql`
     query getGuildChannels($gid: String!) {
   getGuildChannels(guildId: $gid) {
@@ -440,6 +511,10 @@ export const GetLogSettingsDocument = gql`
       name
       on
       channel
+      ignored {
+        users
+        channels
+      }
     }
     updatedAt
   }
@@ -496,7 +571,7 @@ export function useGetGuildsQuery(options: Omit<Urql.UseQueryArgs<GetGuildsQuery
 export const MeDocument = gql`
     query Me {
   me {
-    id
+    userId
     username
     avatar
     discriminator

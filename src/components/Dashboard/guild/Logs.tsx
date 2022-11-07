@@ -23,47 +23,15 @@ import {
   useGetLogSettingsQuery,
   useSetLogSettingsMutation,
 } from "../../../generated/graphql";
+import { DiscordEvents } from "../../../types";
 import { failedRequest, successfulRequest } from "../../../utilities/Toaster";
 import { FetchingData } from "../FetchingData";
 import { AdvancedLogConfiguration } from "./components/AdvancedLogConfiguration";
 
-const DiscordEvents = [
-  {
-    name: "messageEvents",
-    displayName: "Message Events",
-    description: "Message delete and update events.",
-  },
-  {
-    name: "channelEvents",
-    displayName: "Channel Events",
-    description: "Channel create, delete and update events.",
-  },
-  {
-    name: "userEvents",
-    displayName: "User Events",
-    description: "User avatar, role, name change events",
-  },
-  {
-    name: "voicePresenceEvents",
-    displayName: "Voice presence Events",
-    description: "User voice channel join, leave and start streaming events.",
-  },
-  {
-    name: "emojiEvents",
-    displayName: "Emoji Events",
-    description: "Emoji create, delete and update events.",
-  },
-  {
-    name: "guildEvents",
-    displayName: "Server Events",
-    description: "Member ban, invite create and server settings change events.",
-  },
-];
-
 export const Logs: FC = () => {
   const { id }: { id: string } = useParams();
   const [loading, setLoading] = useState(false);
-  const [logConfig, setLogConfig] = useState([] as SettingsArgumentType[]);
+  const [logConfig, setLogConfig] = useState([] as Array<SettingsArgumentType>);
   const toast = useToast();
   const [, setLogSettings] = useSetLogSettingsMutation();
 
@@ -76,6 +44,7 @@ export const Logs: FC = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    e.stopPropagation();
     setLoading(true);
     const result = await setLogSettings({ gid: id, settings: logConfig });
     setLoading(false);
@@ -93,11 +62,11 @@ export const Logs: FC = () => {
       console.log("exists: ", logConfig);
     } else {
       const newEntry = {
-        id: logConfig.length.toString(),
+        id: logConfig.length,
         name: name,
         channel: value,
         on: false,
-      } as LogObject;
+      } as SettingsArgumentType;
       logConfig.push(newEntry);
       setLogConfig(logConfig);
       console.log("newEntry: ", logConfig);
@@ -113,11 +82,11 @@ export const Logs: FC = () => {
       console.log("exists: ", logConfig);
     } else {
       const newEntry = {
-        id: logConfig.length.toString(),
+        id: logConfig.length,
         name: name,
         channel: "",
         on: checked,
-      } as LogObject;
+      } as SettingsArgumentType;
       logConfig.push(newEntry);
       setLogConfig(logConfig);
       console.log("newEntry: ", logConfig);
@@ -134,7 +103,7 @@ export const Logs: FC = () => {
       }
     }
   }, [fetching, data?.getLogSettings]);
-
+  
   if (
     !fetching &&
     data?.getLogSettings &&
@@ -143,7 +112,7 @@ export const Logs: FC = () => {
   ) {
     body = (
       <>
-        <Flex flex={1} direction="row" m="60px">
+        <Flex flex={1} flexWrap="wrap" justifyContent="space-between" direction="row" m="60px">
           <Box bg="gray.700" p={5}>
             <Heading>Logs Configuration</Heading>
             <Divider />
@@ -169,7 +138,7 @@ export const Logs: FC = () => {
                           </FormLabel>
                         </Tooltip>
                         <Switch
-                          id={x.name}
+                          id={x.name} 
                           float="right"
                           m="0 auto"
                           defaultChecked={
@@ -223,8 +192,11 @@ export const Logs: FC = () => {
               </Button>
             </form>
           </Box>
+        {DiscordEvents.map(x=>{
+          const ignored = data.getLogSettings.settings?.find(a=>a.name === x.name)?.ignored;
+          return (<AdvancedLogConfiguration ignored={ignored ?? undefined} ignoreType={x.type} event={x.name} displayName={x.displayName} channelList={channels} />)
+        })}
         </Flex>
-        <AdvancedLogConfiguration channelList={channels} title="jakis tytul taki o se event" />
       </>
     );
   }

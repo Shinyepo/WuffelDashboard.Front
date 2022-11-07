@@ -1,0 +1,3 @@
+mutation setIgnoredSettings($id: String!, $event: String!, $settings: IgnoredLogObjectInput!) {
+  setIgnoredSettings(guildId:$id, event:$event, settings: $settings) 
+}

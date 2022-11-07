@@ -1,4 +1,4 @@
-import { useToast, UseToastOptions } from "@chakra-ui/react";
+import { UseToastOptions } from "@chakra-ui/react";
 
 export const failedRequest = (toast: (options?: UseToastOptions) => void) => {
   return toast({
