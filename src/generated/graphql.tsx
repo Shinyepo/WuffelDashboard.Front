@@ -68,6 +68,7 @@ export type LogActivity = {
   createdAt: Scalars['DateTime'];
   guildId: Scalars['String'];
   userId: Scalars['String'];
+  username: Scalars['String'];
 };
 
 export type LogObject = {
@@ -90,18 +91,11 @@ export type LogSettings = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createUser: Users;
   logout: Scalars['Boolean'];
   removeRanking: RrResponse;
   setIgnoredSettings: Scalars['Boolean'];
   setLogSettings: Scalars['Boolean'];
-  setPrefix?: Maybe<Scalars['String']>;
   toggleBot: Scalars['Boolean'];
-};
-
-
-export type MutationCreateUserArgs = {
-  options: UserInfo;
 };
 
 
@@ -124,12 +118,6 @@ export type MutationSetLogSettingsArgs = {
 };
 
 
-export type MutationSetPrefixArgs = {
-  guildId: Scalars['String'];
-  prefix: Scalars['String'];
-};
-
-
 export type MutationToggleBotArgs = {
   guildId: Scalars['String'];
   state: Scalars['Boolean'];
@@ -141,15 +129,11 @@ export type Query = {
   getActivity: Array<LogActivity>;
   getGuildChannels?: Maybe<Array<DiscordChannelSelectList>>;
   getLogSettings: LogSettings;
-  getPrefix?: Maybe<Scalars['String']>;
   guildTraffic?: Maybe<Array<GuildTraffic>>;
   guilds?: Maybe<Array<DiscordGuilds>>;
-  loginUser?: Maybe<Users>;
   logoutUser: Scalars['Boolean'];
   me?: Maybe<Users>;
   streamerRanking?: Maybe<Array<StreamLeaderboard>>;
-  user?: Maybe<UserResponse>;
-  users: UserResponse;
 };
 
 
@@ -173,28 +157,13 @@ export type QueryGetLogSettingsArgs = {
 };
 
 
-export type QueryGetPrefixArgs = {
-  guildId: Scalars['String'];
-};
-
-
 export type QueryGuildTrafficArgs = {
   guildId: Scalars['String'];
 };
 
 
-export type QueryLoginUserArgs = {
-  username: Scalars['String'];
-};
-
-
 export type QueryStreamerRankingArgs = {
   guildId: Scalars['String'];
-};
-
-
-export type QueryUserArgs = {
-  userId: Scalars['String'];
 };
 
 export type Settings = {
@@ -223,12 +192,6 @@ export type StreamLeaderboard = {
   updatedAt: Scalars['String'];
   userId: Scalars['String'];
   username: Scalars['String'];
-};
-
-export type UserResponse = {
-  __typename?: 'UserResponse';
-  errors?: Maybe<Array<UserError>>;
-  users?: Maybe<Array<Users>>;
 };
 
 export type Users = {
@@ -267,18 +230,6 @@ export type SettingsArgumentType = {
   on: Scalars['Boolean'];
 };
 
-export type UserError = {
-  __typename?: 'userError';
-  field: Scalars['String'];
-  message: Scalars['String'];
-};
-
-export type UserInfo = {
-  email: Scalars['String'];
-  userId: Scalars['String'];
-  username: Scalars['String'];
-};
-
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -309,14 +260,6 @@ export type SetLogSettingsMutationVariables = Exact<{
 
 export type SetLogSettingsMutation = { __typename?: 'Mutation', setLogSettings: boolean };
 
-export type SetPrefixMutationVariables = Exact<{
-  gid: Scalars['String'];
-  prefix: Scalars['String'];
-}>;
-
-
-export type SetPrefixMutation = { __typename?: 'Mutation', setPrefix?: string | null | undefined };
-
 export type ToggleBotMutationVariables = Exact<{
   id: Scalars['String'];
   state: Scalars['Boolean'];
@@ -337,7 +280,7 @@ export type GetActivityQueryVariables = Exact<{
 }>;
 
 
-export type GetActivityQuery = { __typename?: 'Query', getActivity: Array<{ __typename?: 'LogActivity', userId: string, activity: string, activityType: boolean, createdAt: any }> };
+export type GetActivityQuery = { __typename?: 'Query', getActivity: Array<{ __typename?: 'LogActivity', userId: string, username: string, activity: string, activityType: boolean, createdAt: any }> };
 
 export type GetGuildChannelsQueryVariables = Exact<{
   gid: Scalars['String'];
@@ -352,13 +295,6 @@ export type GetLogSettingsQueryVariables = Exact<{
 
 
 export type GetLogSettingsQuery = { __typename?: 'Query', getLogSettings: { __typename?: 'LogSettings', id: number, guildId: string, updatedAt: string, settings?: Array<{ __typename?: 'LogObject', id: number, name: string, on: boolean, channel?: string | null | undefined, ignored?: { __typename?: 'IgnoredLogObject', users?: Array<string> | null | undefined, channels?: Array<string> | null | undefined } | null | undefined }> | null | undefined } };
-
-export type GetPrefixQueryVariables = Exact<{
-  gid: Scalars['String'];
-}>;
-
-
-export type GetPrefixQuery = { __typename?: 'Query', getPrefix?: string | null | undefined };
 
 export type GuildTrafficQueryVariables = Exact<{
   gid: Scalars['String'];
@@ -424,15 +360,6 @@ export const SetLogSettingsDocument = gql`
 export function useSetLogSettingsMutation() {
   return Urql.useMutation<SetLogSettingsMutation, SetLogSettingsMutationVariables>(SetLogSettingsDocument);
 };
-export const SetPrefixDocument = gql`
-    mutation setPrefix($gid: String!, $prefix: String!) {
-  setPrefix(guildId: $gid, prefix: $prefix)
-}
-    `;
-
-export function useSetPrefixMutation() {
-  return Urql.useMutation<SetPrefixMutation, SetPrefixMutationVariables>(SetPrefixDocument);
-};
 export const ToggleBotDocument = gql`
     mutation toggleBot($id: String!, $state: Boolean!) {
   toggleBot(guildId: $id, state: $state)
@@ -467,6 +394,7 @@ export const GetActivityDocument = gql`
     query getActivity($id: String!) {
   getActivity(guildId: $id) {
     userId
+    username
     activity
     activityType
     createdAt
@@ -523,15 +451,6 @@ export const GetLogSettingsDocument = gql`
 
 export function useGetLogSettingsQuery(options: Omit<Urql.UseQueryArgs<GetLogSettingsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetLogSettingsQuery>({ query: GetLogSettingsDocument, ...options });
-};
-export const GetPrefixDocument = gql`
-    query getPrefix($gid: String!) {
-  getPrefix(guildId: $gid)
-}
-    `;
-
-export function useGetPrefixQuery(options: Omit<Urql.UseQueryArgs<GetPrefixQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetPrefixQuery>({ query: GetPrefixDocument, ...options });
 };
 export const GuildTrafficDocument = gql`
     query guildTraffic($gid: String!) {

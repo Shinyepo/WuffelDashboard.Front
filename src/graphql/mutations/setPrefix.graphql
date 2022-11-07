@@ -1,3 +1,0 @@
-mutation setPrefix($gid: String!, $prefix: String!) {
-  setPrefix(guildId:$gid, prefix: $prefix)
-}
