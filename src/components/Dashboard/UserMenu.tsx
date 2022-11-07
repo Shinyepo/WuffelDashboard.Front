@@ -10,12 +10,13 @@ interface Props {
 };
 export const UserMenu: FC<Props> = ({ data, full }) => {
   const [, logout] = useLogoutMutation();
+  
   return (
     <Menu>
       <MenuButton display="flex" w="100%">
         <Flex>
           <Avatar
-            src={`https://cdn.discordapp.com/avatars/${data!.me?.id}/${data!.me?.avatar}.png?size=48`}
+            src={`https://cdn.discordapp.com/avatars/${data!.me?.userId}/${data!.me?.avatar}.png?size=48`}
           />
           {full ? (
             <Heading size="sm" m="auto 7px">

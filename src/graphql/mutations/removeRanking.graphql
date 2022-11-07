@@ -1,5 +1,5 @@
-mutation removeRanking($id: String!) {
-  removeRanking(id:$id) {
+mutation removeRanking($id: String!, $guildId: String!) {
+  removeRanking(id:$id, guildId:$guildId) {
     success,
     id
   }

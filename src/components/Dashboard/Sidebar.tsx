@@ -135,7 +135,7 @@ const Sidebar: FC<Props> = ({ meData, guildsData }) => {
                 <MenuButton display="flex" w="100%">
                   <Flex>
                     <Avatar
-                      src={`https://cdn.discordapp.com/avatars/${meData?.me?.id}/${meData?.me?.avatar}.png?size=48`}
+                      src={`https://cdn.discordapp.com/avatars/${meData?.me?.userId}/${meData?.me?.avatar}.png?size=48`}
                     />
                     <Heading size="sm" m="auto 7px">
                       {meData?.me?.username + "#" + meData?.me?.discriminator}
