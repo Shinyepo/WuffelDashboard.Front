@@ -41,8 +41,6 @@ export const MainSwitch: FC<Props> = ({ activeStatus }) => {
     const res = await toggleBot({ id, state: activeState });
     setLoading(false);
     if (res.error || !res.data) return failedRequest(toast);
-
-    setActiveState(res.data.toggleBot);
     successfulRequest(toast);
   };
 
