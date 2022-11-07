@@ -1,9 +1,7 @@
 import {
   Box,
   Divider,
-  Flex,
   Heading,
-  Tab,
   Table,
   TableContainer,
   Tbody,
@@ -13,8 +11,18 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import { FC } from "react";
+import { useParams } from "react-router-dom";
+import { useGetActivityQuery } from "../../generated/graphql";
 
 export const RecentActivity: FC = () => {
+  const { id }: { id: string } = useParams();
+  const [{ data, fetching }] = useGetActivityQuery({
+    variables: {
+      id,
+    },
+  });
+  console.log(data);
+  
   return (
     <Box bg="gray.700" p={5} minW="48%">
       <Heading>Recent user activity</Heading>

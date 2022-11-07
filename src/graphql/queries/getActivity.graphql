@@ -1,0 +1,8 @@
+query getActivity($id:String!) {
+  getActivity(guildId: $id) {
+    userId,
+    activity,
+    activityType,
+    createdAt
+  }
+}
