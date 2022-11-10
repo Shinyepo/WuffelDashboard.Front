@@ -5,7 +5,7 @@ import {
   Heading,
   useToast,
 } from "@chakra-ui/react";
-import { FC, useState, useEffect } from "react";
+import { FC, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   GetGuildChannelsQuery,

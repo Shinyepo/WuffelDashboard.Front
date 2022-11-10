@@ -17,7 +17,6 @@ import { ChangeEvent, FC, FormEvent, useEffect, useState } from "react";
 import { AiOutlineQuestionCircle } from "react-icons/ai";
 import { useParams } from "react-router";
 import {
-  LogObject,
   SettingsArgumentType,
   useGetGuildChannelsQuery,
   useGetLogSettingsQuery,

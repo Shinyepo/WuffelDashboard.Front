@@ -67,6 +67,7 @@ export type LogActivity = {
   activityType: Scalars['Boolean'];
   createdAt: Scalars['DateTime'];
   guildId: Scalars['String'];
+  id: Scalars['Float'];
   userId: Scalars['String'];
   username: Scalars['String'];
 };
@@ -280,7 +281,7 @@ export type GetActivityQueryVariables = Exact<{
 }>;
 
 
-export type GetActivityQuery = { __typename?: 'Query', getActivity: Array<{ __typename?: 'LogActivity', userId: string, username: string, activity: string, activityType: boolean, createdAt: any }> };
+export type GetActivityQuery = { __typename?: 'Query', getActivity: Array<{ __typename?: 'LogActivity', id: number, userId: string, username: string, activity: string, activityType: boolean, createdAt: any }> };
 
 export type GetGuildChannelsQueryVariables = Exact<{
   gid: Scalars['String'];
@@ -393,6 +394,7 @@ export function useCurrGuildQuery(options: Omit<Urql.UseQueryArgs<CurrGuildQuery
 export const GetActivityDocument = gql`
     query getActivity($id: String!) {
   getActivity(guildId: $id) {
+    id
     userId
     username
     activity

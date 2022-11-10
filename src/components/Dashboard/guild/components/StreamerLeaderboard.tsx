@@ -20,11 +20,12 @@ import {
 import { msToDuration } from "../../../../utilities/TimeUtils";
 import { FetchingData } from "../../FetchingData";
 import "../../../../styles/paginationStyles.css";
-import { useToast } from "@chakra-ui/react";
+import { Divider, Heading, useToast } from "@chakra-ui/react";
 import {
   failedRequest,
   successfulRequest,
 } from "../../../../utilities/Toaster";
+import { ReFetchData } from "./ReFetchData";
 
 interface Props {}
 
@@ -36,7 +37,7 @@ interface ItemsProps {
 
 export const StreamerLeaderboard: FC<Props> = () => {
   const { id }: { id: string } = useParams();
-  const [{ data, fetching }] = useStreamerRankingQuery({
+  const [{ data, fetching }, reExec] = useStreamerRankingQuery({
     variables: { gid: id },
   });
   const [ranking, setRanking] = useState<
@@ -81,12 +82,11 @@ export const StreamerLeaderboard: FC<Props> = () => {
       setItemOffset(newOffset);
     }
   };
-
-  let body = <FetchingData />;
-
-  if (!fetching && data) {
-    body = (
+  return (
       <>
+        <Heading display="inline-block">Discord streamer ranking</Heading>
+        <ReFetchData reFetch={reExec} />
+        <Divider />
         <Table variant="simple" colorScheme="whiteAlpha">
           {ranking && ranking.length > 0 ? null : (
             <TableCaption fontSize="2xl">No Data...</TableCaption>
@@ -125,9 +125,6 @@ export const StreamerLeaderboard: FC<Props> = () => {
         )}
       </>
     );
-  }
-
-  return body;
 };
 
 const Items: FC<ItemsProps> = ({ currentItems, offset, onClick }) => {
