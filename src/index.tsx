@@ -31,6 +31,9 @@ const client = createClient({
   exchanges: [
     dedupExchange,
     cacheExchange({
+      keys: {
+        Users: ()=> null,
+      },
       resolvers: {
         Query: {
           // guildTraffic: (data, args, cache, info) => {
