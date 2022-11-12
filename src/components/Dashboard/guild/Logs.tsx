@@ -19,6 +19,7 @@ import { useParams } from "react-router";
 import {
   SettingsArgumentType,
   useGetGuildChannelsQuery,
+  useGetGuildMembersQuery,
   useGetLogSettingsQuery,
   useSetLogSettingsMutation,
 } from "../../../generated/graphql";
@@ -36,6 +37,11 @@ export const Logs: FC = () => {
 
   const [{ data, fetching }] = useGetLogSettingsQuery({
     variables: { gid: id },
+  });
+  const [{data: memberData, fetching: memberFetching}] = useGetGuildMembersQuery({
+    variables: {
+      gid: id,
+    },
   });
   const [{ data: channels, fetching: fetchingChannels }] =
     useGetGuildChannelsQuery({ variables: { gid: id } });
@@ -108,7 +114,9 @@ export const Logs: FC = () => {
     !fetching &&
     data?.getLogSettings &&
     !fetchingChannels &&
-    channels?.getGuildChannels
+    channels?.getGuildChannels &&
+    !memberFetching &&
+    memberData?.getGuildMembers
   ) {
     body = (
       <>
@@ -209,6 +217,7 @@ export const Logs: FC = () => {
                 event={x.name}
                 displayName={x.displayName}
                 channelList={channels}
+                memberList={memberData!}
               />
             );
           })}

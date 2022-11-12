@@ -1,0 +1,8 @@
+query getGuildMembers($gid: String!) {
+  getGuildMembers(guildId: $gid) {
+    id,
+    nick,
+    username,
+    discriminator
+  }
+}

@@ -1,14 +1,9 @@
-import {
-  Box,
-  Button,
-  Divider,
-  Heading,
-  useToast,
-} from "@chakra-ui/react";
+import { Box, Button, Divider, Heading, useToast } from "@chakra-ui/react";
 import { FC, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   GetGuildChannelsQuery,
+  GetGuildMembersQuery,
   IgnoredLogObject,
   useSetIgnoredSettingsMutation,
 } from "../../../../generated/graphql";
@@ -24,6 +19,7 @@ interface Props {
   ignoreType: IgnoreType;
   displayName: string;
   channelList: GetGuildChannelsQuery;
+  memberList: GetGuildMembersQuery;
   ignored?: IgnoredLogObject;
 }
 
@@ -33,16 +29,35 @@ export const AdvancedLogConfiguration: FC<Props> = ({
   displayName,
   ignoreType,
   channelList,
+  memberList,
 }) => {
   const { id }: { id: string } = useParams();
   const [loading, setLoading] = useState(false);
   const multiOptions = new Array<SelectOption>();
+  const memberOptions = new Array<SelectOption>();
   const [selectedChannels, setSelectedChannels] = useState<SelectOption[]>();
   const [selectedUsers, setSelectedUsers] = useState<SelectOption[]>();
   const [, saveSettings] = useSetIgnoredSettingsMutation();
   const toast = useToast();
 
   const defaultValue = new Array<SelectOption>();
+  const defaultMemberValue = new Array<SelectOption>();
+
+  memberList.getGuildMembers?.map((x) => {
+    const option = {
+      label: x.nick
+        ? x.nick + "(" + x.username + "#" + x.discriminator + ")"
+        : x.username + "#" + x.discriminator,
+      value: x.id,
+    } as SelectOption;
+    memberOptions.push(option);
+    if (ignored?.users) {
+      const found = ignored.users.find((a) => a === x.id);
+      if (found) {
+        defaultMemberValue.push(option);
+      }
+    }
+  });
 
   channelList.getGuildChannels?.forEach((x) => {
     const option = {
@@ -112,7 +127,8 @@ export const AdvancedLogConfiguration: FC<Props> = ({
             <MultiSelect
               setSelected={setSelectedUsers}
               type="user"
-              channelList={multiOptions}
+              defaultValue={defaultMemberValue}
+              channelList={memberOptions}
             />
           </Box>
         ) : null}

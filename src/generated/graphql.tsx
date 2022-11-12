@@ -39,6 +39,14 @@ export type DiscordGuilds = {
   permissions_new: Scalars['String'];
 };
 
+export type GetDiscordMembersResult = {
+  __typename?: 'GetDiscordMembersResult';
+  discriminator: Scalars['String'];
+  id: Scalars['String'];
+  nick: Scalars['String'];
+  username: Scalars['String'];
+};
+
 export type GuildTraffic = {
   __typename?: 'GuildTraffic';
   createdAt: Scalars['DateTime'];
@@ -129,6 +137,7 @@ export type Query = {
   currGuild?: Maybe<Settings>;
   getActivity: Array<LogActivity>;
   getGuildChannels?: Maybe<Array<DiscordChannelSelectList>>;
+  getGuildMembers?: Maybe<Array<GetDiscordMembersResult>>;
   getLogSettings: LogSettings;
   guildTraffic?: Maybe<Array<GuildTraffic>>;
   guilds?: Maybe<Array<DiscordGuilds>>;
@@ -149,6 +158,11 @@ export type QueryGetActivityArgs = {
 
 
 export type QueryGetGuildChannelsArgs = {
+  guildId: Scalars['String'];
+};
+
+
+export type QueryGetGuildMembersArgs = {
   guildId: Scalars['String'];
 };
 
@@ -290,6 +304,13 @@ export type GetGuildChannelsQueryVariables = Exact<{
 
 export type GetGuildChannelsQuery = { __typename?: 'Query', getGuildChannels?: Array<{ __typename?: 'DiscordChannelSelectList', id: string, type?: number | null | undefined, name?: string | null | undefined, position?: number | null | undefined, parent_id?: string | null | undefined, guild_id?: string | null | undefined, channels?: Array<{ __typename?: 'DiscordChannelSelectList', id: string, type?: number | null | undefined, name?: string | null | undefined, position?: number | null | undefined, parent_id?: string | null | undefined, guild_id?: string | null | undefined }> | null | undefined }> | null | undefined };
 
+export type GetGuildMembersQueryVariables = Exact<{
+  gid: Scalars['String'];
+}>;
+
+
+export type GetGuildMembersQuery = { __typename?: 'Query', getGuildMembers?: Array<{ __typename?: 'GetDiscordMembersResult', id: string, nick: string, username: string, discriminator: string }> | null | undefined };
+
 export type GetLogSettingsQueryVariables = Exact<{
   gid: Scalars['String'];
 }>;
@@ -430,6 +451,20 @@ export const GetGuildChannelsDocument = gql`
 
 export function useGetGuildChannelsQuery(options: Omit<Urql.UseQueryArgs<GetGuildChannelsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetGuildChannelsQuery>({ query: GetGuildChannelsDocument, ...options });
+};
+export const GetGuildMembersDocument = gql`
+    query getGuildMembers($gid: String!) {
+  getGuildMembers(guildId: $gid) {
+    id
+    nick
+    username
+    discriminator
+  }
+}
+    `;
+
+export function useGetGuildMembersQuery(options: Omit<Urql.UseQueryArgs<GetGuildMembersQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetGuildMembersQuery>({ query: GetGuildMembersDocument, ...options });
 };
 export const GetLogSettingsDocument = gql`
     query getLogSettings($gid: String!) {
