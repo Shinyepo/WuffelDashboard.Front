@@ -24,7 +24,7 @@ export const DiscordEvents = [
     name: "channelEvents",
     displayName: "Channel Events",
     description: "Channel create, delete and update events.",
-    type: IgnoreType.all
+    type: IgnoreType.channel
   },
   {
     name: "userEvents",

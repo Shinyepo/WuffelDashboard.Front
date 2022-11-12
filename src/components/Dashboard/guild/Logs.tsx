@@ -97,12 +97,13 @@ export const Logs: FC = () => {
       if (data.getLogSettings.settings) {
         data.getLogSettings.settings.forEach((x) => {
           delete x.__typename;
+          delete x.ignored?.__typename;
         });
         setLogConfig(data.getLogSettings.settings);
       }
     }
   }, [fetching, data?.getLogSettings]);
-  
+
   if (
     !fetching &&
     data?.getLogSettings &&
@@ -111,7 +112,13 @@ export const Logs: FC = () => {
   ) {
     body = (
       <>
-        <Flex flex={1} flexWrap="wrap" justifyContent="space-between" direction="row" m="60px">
+        <Flex
+          flex={1}
+          flexWrap="wrap"
+          justifyContent="space-between"
+          direction="row"
+          m="60px"
+        >
           <Box bg="gray.700" p={5}>
             <Heading>Logs Configuration</Heading>
             <Divider />
@@ -137,7 +144,7 @@ export const Logs: FC = () => {
                           </FormLabel>
                         </Tooltip>
                         <Switch
-                          id={x.name} 
+                          id={x.name}
                           float="right"
                           m="0 auto"
                           defaultChecked={
@@ -191,10 +198,20 @@ export const Logs: FC = () => {
               </Button>
             </form>
           </Box>
-        {DiscordEvents.map(x=>{
-          const ignored = data.getLogSettings.settings?.find(a=>a.name === x.name)?.ignored;
-          return (<AdvancedLogConfiguration ignored={ignored ?? undefined} ignoreType={x.type} event={x.name} displayName={x.displayName} channelList={channels} />)
-        })}
+          {DiscordEvents.map((x) => {
+            const ignored = data.getLogSettings.settings?.find(
+              (a) => a.name === x.name
+            )?.ignored;
+            return (
+              <AdvancedLogConfiguration
+                ignored={ignored ?? undefined}
+                ignoreType={x.type}
+                event={x.name}
+                displayName={x.displayName}
+                channelList={channels}
+              />
+            );
+          })}
         </Flex>
       </>
     );
