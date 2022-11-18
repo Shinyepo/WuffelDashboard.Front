@@ -19,7 +19,7 @@ export const GuildContent: FC<Props> = ({ gid, handleSorting }) => {
     // eslint-disable-next-line
   }, [gid]);
 
-  if (error?.networkError) {
+  if (error) {
     return <FetchingNetworkError />;
   }
 
