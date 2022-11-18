@@ -53,7 +53,7 @@ export const RecentActivity: FC = () => {
     }
   };
   return (
-    <Box bg="gray.700" p={5} minW="48%">
+    <Box bg="gray.700" p={5} minW="580px" w="48%" h="100%" m="3px">
       <Heading display="inline-block">Recent user activity</Heading>
       <ReFetchData reFetch={reExec} />
 
@@ -105,7 +105,7 @@ const Items: FC<ItemsProps> = ({ currentItems, offset }) => {
             <Td>{idx + 1 + offset}</Td>
             <Td>{x.activity}</Td>
             <Td>{x.username}</Td>
-            <Td>{x.createdAt}</Td>
+            <Td>{new Date(x.createdAt).toLocaleDateString()}</Td>
           </Tr>
         ))}
     </>

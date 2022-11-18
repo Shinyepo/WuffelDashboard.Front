@@ -32,12 +32,13 @@ const client = createClient({
     dedupExchange,
     cacheExchange({
       keys: {
-        Users: ()=> null,
+        Users: () => null,
+        IgnoredLogObject: () => null,
       },
       resolvers: {
         Query: {
           // guildTraffic: (data, args, cache, info) => {
-          //   console.log("cache exchage resolver query read fragment");    
+          //   console.log("cache exchage resolver query read fragment");
           //   const { guildId } = args as QueryCurrGuildArgs;
           //   const result = cache.readFragment(
           //     gql`
@@ -51,7 +52,6 @@ const client = createClient({
           //     {guildId: guildId }
           //   );
           //   console.log("result ? ", result);
-            
           //   return result;
           // },
         },

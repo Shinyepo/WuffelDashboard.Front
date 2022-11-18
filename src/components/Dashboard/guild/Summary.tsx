@@ -17,8 +17,8 @@ export const Summary: FC<Props> = ({ count }) => {
   return (
     <>
       <DailyStatistics count={count} trafficData={data} />
-      <Flex position="relative" flex={1} flexDirection="row" m="20px" justifyContent="space-between">
-        <Box minW="48%" bg="gray.700" p={5}>
+      <Flex position="relative" flex={1} flexDirection="row" m="20px" justifyContent="space-between" flexWrap="wrap">
+        <Box minW="580px" w="48%" bg="gray.700" p={5} m="3px" h="100%">
           <Heading display="inline-block">
             Last 24h traffic
           </Heading>

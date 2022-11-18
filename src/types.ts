@@ -21,6 +21,12 @@ export const DiscordEvents = [
     type: IgnoreType.all
   },
   {
+    name: "voicePresenceEvents",
+    displayName: "Voice presence Events",
+    description: "User voice channel join, leave and start streaming events.",
+    type: IgnoreType.all
+  },
+  {
     name: "channelEvents",
     displayName: "Channel Events",
     description: "Channel create, delete and update events.",
@@ -33,22 +39,16 @@ export const DiscordEvents = [
     type: IgnoreType.user
   },
   {
-    name: "voicePresenceEvents",
-    displayName: "Voice presence Events",
-    description: "User voice channel join, leave and start streaming events.",
-    type: IgnoreType.all
-  },
-  {
     name: "emojiEvents",
     displayName: "Emoji Events",
     description: "Emoji create, delete and update events.",
-    type: IgnoreType.user
+    type: IgnoreType.nothing
   },
   {
     name: "guildEvents",
     displayName: "Server Events",
     description: "Member ban, invite create and server settings change events.",
-    type: IgnoreType.user
+    type: IgnoreType.nothing
   },
 ];
 
