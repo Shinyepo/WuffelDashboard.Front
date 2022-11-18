@@ -23,7 +23,7 @@ import {
   useGetLogSettingsQuery,
   useSetLogSettingsMutation,
 } from "../../../generated/graphql";
-import { DiscordEvents } from "../../../types";
+import { DiscordEvents, IgnoreType } from "../../../types";
 import { failedRequest, successfulRequest } from "../../../utilities/Toaster";
 import { FetchingData } from "../FetchingData";
 import { AdvancedLogConfiguration } from "./components/AdvancedLogConfiguration";
@@ -207,6 +207,7 @@ export const Logs: FC = () => {
             </form>
           </Box>
           {DiscordEvents.map((x) => {
+            if (x.type === IgnoreType.nothing) return;
             const ignored = data.getLogSettings.settings?.find(
               (a) => a.name === x.name
             )?.ignored;
