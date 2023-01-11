@@ -18,9 +18,11 @@ const LandingPage: FC = () => {
       <Flex flex={1} direction="column" alignItems="center">
         <Box boxSize="256px" mt="150px">
           <Image
-            src="https://cdn.discordapp.com/app-icons/778035878932119602/39b999d289809ca49089db10372321b7.png?size=256"
+            src="/icon.png"
             alt="Wuffel"
             objectFit="fill"
+            w="256px"
+            h="256px"
           />
         </Box>
         <Heading>

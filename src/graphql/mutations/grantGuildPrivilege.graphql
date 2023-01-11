@@ -1,0 +1,10 @@
+mutation grantGuildPrivilege($guildId: String!, $user: PrivilegedUserArg!) {
+  grantGuildPrivilege(guildId: $guildId, user: $user) {
+    guildId
+    users {
+      username
+      userId
+      nick
+    }
+  }
+}

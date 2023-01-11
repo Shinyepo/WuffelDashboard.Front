@@ -1,0 +1,10 @@
+query getPrivilegedMembers($gid: String!) {
+  getPrivilegedMembers(guildId:$gid) {
+    guildId,
+    users {
+      username, 
+      userId,
+      nick
+    }
+  }
+}

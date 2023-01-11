@@ -2,6 +2,7 @@ import { FC } from "react";
 import { Route, Switch } from "react-router";
 import { CurrGuildQuery } from "../../../generated/graphql";
 import { Logs } from "./Logs";
+import { Moderation } from "./Moderation";
 import { Settings } from "./Settings";
 import { StreamerRanking } from "./StreamerRanking";
 import { Summary } from "./Summary";
@@ -13,11 +14,25 @@ interface Props {
 export const Main: FC<Props> = ({ guildData }) => (
   <>
     <Switch>
-      <Route exact path="/dashboard/:id" component={() => <Summary count={guildData?.currGuild!.userCount} />} />
-      <Route path="/dashboard/:id/summary" component={() => <Summary count={guildData?.currGuild!.userCount} />} />
-      <Route path="/dashboard/:id/settings" component={() => <Settings settings={guildData} />}  />
+      <Route
+        exact
+        path="/dashboard/:id"
+        component={() => <Summary count={guildData?.currGuild!.userCount} />}
+      />
+      <Route
+        path="/dashboard/:id/summary"
+        component={() => <Summary count={guildData?.currGuild!.userCount} />}
+      />
+      <Route
+        path="/dashboard/:id/settings"
+        component={() => <Settings settings={guildData} />}
+      />
       <Route path="/dashboard/:id/logs" component={Logs} />
-      <Route path="/dashboard/:id/streamerranking" component={StreamerRanking} />
+      <Route path="/dashboard/:id/moderation" component={Moderation} />
+      <Route
+        path="/dashboard/:id/streamerranking"
+        component={StreamerRanking}
+      />
     </Switch>
   </>
 );

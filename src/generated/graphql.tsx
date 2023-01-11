@@ -43,7 +43,8 @@ export type GetDiscordMembersResult = {
   __typename?: 'GetDiscordMembersResult';
   discriminator: Scalars['String'];
   id: Scalars['String'];
-  nick: Scalars['String'];
+  nick?: Maybe<Scalars['String']>;
+  permissions?: Maybe<Scalars['String']>;
   username: Scalars['String'];
 };
 
@@ -100,17 +101,31 @@ export type LogSettings = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  grantGuildPrivilege: PrivilegedMembers;
   logout: Scalars['Boolean'];
   removeRanking: RrResponse;
+  revokeGuildPrivilege: Scalars['Boolean'];
   setIgnoredSettings: Scalars['Boolean'];
   setLogSettings: Scalars['Boolean'];
   toggleBot: Scalars['Boolean'];
 };
 
 
+export type MutationGrantGuildPrivilegeArgs = {
+  guildId: Scalars['String'];
+  user: PrivilegedUserArg;
+};
+
+
 export type MutationRemoveRankingArgs = {
   guildId: Scalars['String'];
   id: Scalars['String'];
+};
+
+
+export type MutationRevokeGuildPrivilegeArgs = {
+  guildId: Scalars['String'];
+  userId: Scalars['String'];
 };
 
 
@@ -132,6 +147,25 @@ export type MutationToggleBotArgs = {
   state: Scalars['Boolean'];
 };
 
+export type PrivilegedMembers = {
+  __typename?: 'PrivilegedMembers';
+  guildId: Scalars['String'];
+  users: Array<PrivilegedUser>;
+};
+
+export type PrivilegedUser = {
+  __typename?: 'PrivilegedUser';
+  nick?: Maybe<Scalars['String']>;
+  userId: Scalars['String'];
+  username: Scalars['String'];
+};
+
+export type PrivilegedUserArg = {
+  nick?: Maybe<Scalars['String']>;
+  userId: Scalars['String'];
+  username: Scalars['String'];
+};
+
 export type Query = {
   __typename?: 'Query';
   currGuild?: Maybe<Settings>;
@@ -139,6 +173,7 @@ export type Query = {
   getGuildChannels?: Maybe<Array<DiscordChannelSelectList>>;
   getGuildMembers?: Maybe<Array<GetDiscordMembersResult>>;
   getLogSettings: LogSettings;
+  getPrivilegedMembers: PrivilegedMembers;
   guildTraffic?: Maybe<Array<GuildTraffic>>;
   guilds?: Maybe<Array<DiscordGuilds>>;
   logoutUser: Scalars['Boolean'];
@@ -168,6 +203,11 @@ export type QueryGetGuildMembersArgs = {
 
 
 export type QueryGetLogSettingsArgs = {
+  guildId: Scalars['String'];
+};
+
+
+export type QueryGetPrivilegedMembersArgs = {
   guildId: Scalars['String'];
 };
 
@@ -245,6 +285,14 @@ export type SettingsArgumentType = {
   on: Scalars['Boolean'];
 };
 
+export type GrantGuildPrivilegeMutationVariables = Exact<{
+  guildId: Scalars['String'];
+  user: PrivilegedUserArg;
+}>;
+
+
+export type GrantGuildPrivilegeMutation = { __typename?: 'Mutation', grantGuildPrivilege: { __typename?: 'PrivilegedMembers', guildId: string, users: Array<{ __typename?: 'PrivilegedUser', username: string, userId: string, nick?: string | null | undefined }> } };
+
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -257,6 +305,14 @@ export type RemoveRankingMutationVariables = Exact<{
 
 
 export type RemoveRankingMutation = { __typename?: 'Mutation', removeRanking: { __typename?: 'rrResponse', success: boolean, id: string } };
+
+export type RevokeGuildPrivilegeMutationVariables = Exact<{
+  gid: Scalars['String'];
+  userId: Scalars['String'];
+}>;
+
+
+export type RevokeGuildPrivilegeMutation = { __typename?: 'Mutation', revokeGuildPrivilege: boolean };
 
 export type SetIgnoredSettingsMutationVariables = Exact<{
   id: Scalars['String'];
@@ -309,7 +365,7 @@ export type GetGuildMembersQueryVariables = Exact<{
 }>;
 
 
-export type GetGuildMembersQuery = { __typename?: 'Query', getGuildMembers?: Array<{ __typename?: 'GetDiscordMembersResult', id: string, nick: string, username: string, discriminator: string }> | null | undefined };
+export type GetGuildMembersQuery = { __typename?: 'Query', getGuildMembers?: Array<{ __typename?: 'GetDiscordMembersResult', id: string, nick?: string | null | undefined, username: string, discriminator: string }> | null | undefined };
 
 export type GetLogSettingsQueryVariables = Exact<{
   gid: Scalars['String'];
@@ -317,6 +373,13 @@ export type GetLogSettingsQueryVariables = Exact<{
 
 
 export type GetLogSettingsQuery = { __typename?: 'Query', getLogSettings: { __typename?: 'LogSettings', id: number, guildId: string, updatedAt: string, settings?: Array<{ __typename?: 'LogObject', id: number, name: string, on: boolean, channel?: string | null | undefined, ignored?: { __typename?: 'IgnoredLogObject', users?: Array<string> | null | undefined, channels?: Array<string> | null | undefined } | null | undefined }> | null | undefined } };
+
+export type GetPrivilegedMembersQueryVariables = Exact<{
+  gid: Scalars['String'];
+}>;
+
+
+export type GetPrivilegedMembersQuery = { __typename?: 'Query', getPrivilegedMembers: { __typename?: 'PrivilegedMembers', guildId: string, users: Array<{ __typename?: 'PrivilegedUser', username: string, userId: string, nick?: string | null | undefined }> } };
 
 export type GuildTrafficQueryVariables = Exact<{
   gid: Scalars['String'];
@@ -343,6 +406,22 @@ export type StreamerRankingQueryVariables = Exact<{
 export type StreamerRankingQuery = { __typename?: 'Query', streamerRanking?: Array<{ __typename?: 'StreamLeaderboard', id: number, userId: string, guildId: string, username: string, nickname?: string | null | undefined, timeStreamed: string, updatedAt: string, createdAt: string }> | null | undefined };
 
 
+export const GrantGuildPrivilegeDocument = gql`
+    mutation grantGuildPrivilege($guildId: String!, $user: PrivilegedUserArg!) {
+  grantGuildPrivilege(guildId: $guildId, user: $user) {
+    guildId
+    users {
+      username
+      userId
+      nick
+    }
+  }
+}
+    `;
+
+export function useGrantGuildPrivilegeMutation() {
+  return Urql.useMutation<GrantGuildPrivilegeMutation, GrantGuildPrivilegeMutationVariables>(GrantGuildPrivilegeDocument);
+};
 export const LogoutDocument = gql`
     mutation logout {
   logout
@@ -363,6 +442,15 @@ export const RemoveRankingDocument = gql`
 
 export function useRemoveRankingMutation() {
   return Urql.useMutation<RemoveRankingMutation, RemoveRankingMutationVariables>(RemoveRankingDocument);
+};
+export const RevokeGuildPrivilegeDocument = gql`
+    mutation revokeGuildPrivilege($gid: String!, $userId: String!) {
+  revokeGuildPrivilege(guildId: $gid, userId: $userId)
+}
+    `;
+
+export function useRevokeGuildPrivilegeMutation() {
+  return Urql.useMutation<RevokeGuildPrivilegeMutation, RevokeGuildPrivilegeMutationVariables>(RevokeGuildPrivilegeDocument);
 };
 export const SetIgnoredSettingsDocument = gql`
     mutation setIgnoredSettings($id: String!, $event: String!, $settings: IgnoredLogObjectInput!) {
@@ -488,6 +576,22 @@ export const GetLogSettingsDocument = gql`
 
 export function useGetLogSettingsQuery(options: Omit<Urql.UseQueryArgs<GetLogSettingsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetLogSettingsQuery>({ query: GetLogSettingsDocument, ...options });
+};
+export const GetPrivilegedMembersDocument = gql`
+    query getPrivilegedMembers($gid: String!) {
+  getPrivilegedMembers(guildId: $gid) {
+    guildId
+    users {
+      username
+      userId
+      nick
+    }
+  }
+}
+    `;
+
+export function useGetPrivilegedMembersQuery(options: Omit<Urql.UseQueryArgs<GetPrivilegedMembersQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetPrivilegedMembersQuery>({ query: GetPrivilegedMembersDocument, ...options });
 };
 export const GuildTrafficDocument = gql`
     query guildTraffic($gid: String!) {
