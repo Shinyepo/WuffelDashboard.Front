@@ -22,7 +22,12 @@ import {
 import { NoData } from "../../NoData";
 import { useParams } from "react-router-dom";
 import { FetchingData } from "../../FetchingData";
-import { failedRequest, successfulRequest } from "../../../../utilities/Toaster";
+import {
+  failedRequest,
+  successfulRequest,
+} from "../../../../utilities/Toaster";
+import ReactPaginate from "react-paginate";
+import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
 
 interface Props {
   memberList?: GetDiscordMembersResult[];
@@ -37,6 +42,10 @@ type pMembers = {
 
 export const ModList: FC<Props> = ({ memberList }) => {
   const [pMembers, sett] = useState<pMembers[]>([]);
+  const [currentItems, setCurrentItems] = useState<pMembers[] | null>();
+  const [pageCount, setPageCount] = useState(0);
+  const [itemOffset, setItemOffset] = useState(0);
+  const itemsPerPage = 15;
   const toast = useToast();
   const { id } = useParams();
   const [, revoke] = useRevokeGuildPrivilegeMutation();
@@ -44,11 +53,12 @@ export const ModList: FC<Props> = ({ memberList }) => {
   const [{ data, fetching }] = useGetModeratorsQuery({
     variables: { gid: id! },
   });
+
   const handleClick = async (e: MouseEvent<HTMLButtonElement>) => {
     const element = e.currentTarget;
     const permission = element.getAttribute("data-permission");
-    
-    if (permission === "true") {      
+
+    if (permission === "true") {
       const res = await revoke({ gid: id!, userId: element.value });
       if (res.error) return failedRequest(toast);
       sett((a) => {
@@ -56,7 +66,7 @@ export const ModList: FC<Props> = ({ memberList }) => {
         return [...a];
       });
       return successfulRequest(toast);
-    } else if (permission === "false"){
+    } else if (permission === "false") {
       const res = await grant({ guildId: id!, userId: element.value });
       if (res.error) return failedRequest(toast);
       sett((a) => {
@@ -86,6 +96,22 @@ export const ModList: FC<Props> = ({ memberList }) => {
     }
   }, [fetching, data]);
 
+  useEffect(() => {
+    const endOffset = itemOffset + itemsPerPage;
+    if (pMembers) {
+      const trueFirst = pMembers.sort((a, b) => Number(b.permission) - Number(a.permission));
+      setCurrentItems(trueFirst.slice(itemOffset, endOffset));
+      setPageCount(Math.ceil(pMembers.length / itemsPerPage));
+    }
+  }, [itemOffset, itemsPerPage, pMembers]);
+
+  const handlePageClick = (event: any) => {
+    if (pMembers) {
+      const newOffset = (event.selected * itemsPerPage) % pMembers.length;
+      setItemOffset(newOffset);
+    }
+  };
+
   if (!pMembers) return <FetchingData />;
   return (
     <>
@@ -104,8 +130,8 @@ export const ModList: FC<Props> = ({ memberList }) => {
             </Tr>
           </Thead>
           <Tbody>
-            {pMembers &&
-              pMembers.map((x, idx) => {
+            {currentItems &&
+              currentItems.map((x, idx) => {
                 return (
                   <Tr key={idx}>
                     <Td>{x.display}</Td>
@@ -129,7 +155,25 @@ export const ModList: FC<Props> = ({ memberList }) => {
               })}
           </Tbody>
         </Table>
+        {pMembers.length > 0 && (
+          <ReactPaginate
+            breakLabel="..."
+            nextLabel={<BsArrowRight />}
+            onPageChange={handlePageClick}
+            pageRangeDisplayed={1}
+            pageCount={pageCount}
+            previousLabel={<BsArrowLeft />}
+            renderOnZeroPageCount={undefined}
+            nextClassName="next"
+            previousClassName="previous"
+            containerClassName="container"
+            pageClassName="page"
+            breakClassName="break"
+          />
+        )}
       </TableContainer>
     </>
   );
 };
+
+
