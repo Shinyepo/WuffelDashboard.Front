@@ -15,7 +15,6 @@ export const DailyStatistics: FC<Props> = ({ count, trafficData }) => {
 
   if (trafficData && trafficData?.guildTraffic) {
     const traffic = trafficData.guildTraffic;
-    console.log(traffic);
     
     const left = traffic.filter((x) => !x.joined).length;
     const joined = traffic.filter((x) => x.joined).length;

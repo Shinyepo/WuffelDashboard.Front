@@ -103,7 +103,7 @@ export type LogSettings = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  grantGuildPrivilege: PrivilegedMembers;
+  grantGuildPrivilege: Scalars['Boolean']['output'];
   logout: Scalars['Boolean']['output'];
   removeRanking: RrResponse;
   revokeGuildPrivilege: Scalars['Boolean']['output'];
@@ -115,7 +115,7 @@ export type Mutation = {
 
 export type MutationGrantGuildPrivilegeArgs = {
   guildId: Scalars['String']['input'];
-  user: PrivilegedUserArg;
+  userId: Scalars['String']['input'];
 };
 
 
@@ -162,12 +162,6 @@ export type PrivilegedUser = {
   username: Scalars['String']['output'];
 };
 
-export type PrivilegedUserArg = {
-  nick?: InputMaybe<Scalars['String']['input']>;
-  userId: Scalars['String']['input'];
-  username: Scalars['String']['input'];
-};
-
 export type Query = {
   __typename?: 'Query';
   currGuild?: Maybe<Settings>;
@@ -175,6 +169,7 @@ export type Query = {
   getGuildChannels?: Maybe<Array<DiscordChannelSelectList>>;
   getGuildMembers?: Maybe<Array<GetDiscordMembersResult>>;
   getLogSettings: LogSettings;
+  getModerators: Array<Scalars['String']['output']>;
   getPrivilegedMembers: PrivilegedMembers;
   guildTraffic?: Maybe<Array<GuildTraffic>>;
   guilds?: Maybe<Array<DiscordGuilds>>;
@@ -209,6 +204,11 @@ export type QueryGetLogSettingsArgs = {
 };
 
 
+export type QueryGetModeratorsArgs = {
+  guildId: Scalars['String']['input'];
+};
+
+
 export type QueryGetPrivilegedMembersArgs = {
   guildId: Scalars['String']['input'];
 };
@@ -233,6 +233,7 @@ export type Settings = {
   guildRole: Scalars['String']['output'];
   id: Scalars['Float']['output'];
   modRole?: Maybe<Scalars['String']['output']>;
+  moderators?: Maybe<Array<Scalars['String']['output']>>;
   muteRole?: Maybe<Scalars['String']['output']>;
   prefix: Scalars['String']['output'];
   systemNotice?: Maybe<Scalars['Boolean']['output']>;
@@ -289,11 +290,11 @@ export type SettingsArgumentType = {
 
 export type GrantGuildPrivilegeMutationVariables = Exact<{
   guildId: Scalars['String']['input'];
-  user: PrivilegedUserArg;
+  userId: Scalars['String']['input'];
 }>;
 
 
-export type GrantGuildPrivilegeMutation = { __typename?: 'Mutation', grantGuildPrivilege: { __typename?: 'PrivilegedMembers', guildId: string, users: Array<{ __typename?: 'PrivilegedUser', username: string, userId: string, nick?: string | null }> } };
+export type GrantGuildPrivilegeMutation = { __typename?: 'Mutation', grantGuildPrivilege: boolean };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -383,6 +384,13 @@ export type GetPrivilegedMembersQueryVariables = Exact<{
 
 export type GetPrivilegedMembersQuery = { __typename?: 'Query', getPrivilegedMembers: { __typename?: 'PrivilegedMembers', guildId: string, users: Array<{ __typename?: 'PrivilegedUser', username: string, userId: string, nick?: string | null }> } };
 
+export type GetModeratorsQueryVariables = Exact<{
+  gid: Scalars['String']['input'];
+}>;
+
+
+export type GetModeratorsQuery = { __typename?: 'Query', getModerators: Array<string> };
+
 export type GuildTrafficQueryVariables = Exact<{
   gid: Scalars['String']['input'];
 }>;
@@ -409,15 +417,8 @@ export type StreamerRankingQuery = { __typename?: 'Query', streamerRanking?: Arr
 
 
 export const GrantGuildPrivilegeDocument = gql`
-    mutation grantGuildPrivilege($guildId: String!, $user: PrivilegedUserArg!) {
-  grantGuildPrivilege(guildId: $guildId, user: $user) {
-    guildId
-    users {
-      username
-      userId
-      nick
-    }
-  }
+    mutation grantGuildPrivilege($guildId: String!, $userId: String!) {
+  grantGuildPrivilege(guildId: $guildId, userId: $userId)
 }
     `;
 
@@ -594,6 +595,15 @@ export const GetPrivilegedMembersDocument = gql`
 
 export function useGetPrivilegedMembersQuery(options: Omit<Urql.UseQueryArgs<GetPrivilegedMembersQueryVariables>, 'query'>) {
   return Urql.useQuery<GetPrivilegedMembersQuery, GetPrivilegedMembersQueryVariables>({ query: GetPrivilegedMembersDocument, ...options });
+};
+export const GetModeratorsDocument = gql`
+    query getModerators($gid: String!) {
+  getModerators(guildId: $gid)
+}
+    `;
+
+export function useGetModeratorsQuery(options: Omit<Urql.UseQueryArgs<GetModeratorsQueryVariables>, 'query'>) {
+  return Urql.useQuery<GetModeratorsQuery, GetModeratorsQueryVariables>({ query: GetModeratorsDocument, ...options });
 };
 export const GuildTrafficDocument = gql`
     query guildTraffic($gid: String!) {

@@ -1,0 +1,3 @@
+query getModerators($gid: String!) {
+  getModerators(guildId:$gid)
+}
