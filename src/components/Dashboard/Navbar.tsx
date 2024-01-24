@@ -8,7 +8,8 @@ import { UserMenu } from "./UserMenu";
 
 export const Navbar: FC = () => {
   const [{ data }] = useMeQuery();
-  let body;
+  let body;  
+  
 
   if (data && !data.me) {
     body = (
@@ -46,7 +47,6 @@ export const Navbar: FC = () => {
           <Tooltip label="Soon" aria-label="Soon">
             <Text cursor="pointer" color="gray.400">Docs</Text>
           </Tooltip>
-          <Patreon />
           {body}
         </HStack>
       </Flex>

@@ -29,29 +29,29 @@ import { FetchingData } from "../FetchingData";
 import { AdvancedLogConfiguration } from "./components/AdvancedLogConfiguration";
 
 export const Logs: FC = () => {
-  const { id }: { id: string } = useParams();
+  const { id } = useParams();
   const [loading, setLoading] = useState(false);
   const [logConfig, setLogConfig] = useState([] as Array<SettingsArgumentType>);
   const toast = useToast();
   const [, setLogSettings] = useSetLogSettingsMutation();
 
   const [{ data, fetching }] = useGetLogSettingsQuery({
-    variables: { gid: id },
+    variables: { gid: id! },
   });
   const [{data: memberData, fetching: memberFetching}] = useGetGuildMembersQuery({
     variables: {
-      gid: id,
+      gid: id!,
     },
   });
   const [{ data: channels, fetching: fetchingChannels }] =
-    useGetGuildChannelsQuery({ variables: { gid: id } });
+    useGetGuildChannelsQuery({ variables: { gid: id! } });
   let body = <FetchingData />;
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setLoading(true);
-    const result = await setLogSettings({ gid: id, settings: logConfig });
+    const result = await setLogSettings({ gid: id!, settings: logConfig });
     setLoading(false);
     if (result.error) return failedRequest(toast);
     successfulRequest(toast);
@@ -138,7 +138,7 @@ export const Logs: FC = () => {
                       <FormControl id={x.name} key={idx} maxW="400px">
                         <Tooltip label={x.description} placement="bottom-start">
                           <FormLabel
-                            d="inline"
+                            display="inline"
                             htmlFor={x.name}
                             fontSize="xl"
                             fontWeight={600}

@@ -32,7 +32,7 @@ export const UserMenu: FC<Props> = ({ data, full }) => {
           <MenuItem>
             <Text>Profile</Text>
           </MenuItem>
-          <MenuItem onClick={async () => await logout()}>
+          <MenuItem onClick={async () => await logout({})}>
             <Text>Logout</Text>
           </MenuItem>
         </MenuList>

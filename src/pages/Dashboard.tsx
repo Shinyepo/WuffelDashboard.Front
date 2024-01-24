@@ -1,6 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import { FC, useEffect, useState } from "react";
-import { useHistory, useParams } from "react-router";
+import { useParams } from "react-router";
 import { FetchingData } from "../components/Dashboard/FetchingData";
 import { GuildContent } from "../components/Dashboard/GuildContent";
 import { NotSelected } from "../components/Dashboard/NotSelected";
@@ -10,21 +10,21 @@ import {
   useGetGuildsQuery,
   useMeQuery,
 } from "../generated/graphql";
+import { Route, Routes, useNavigate } from "react-router-dom";
+import { Summary } from "../components/Dashboard/guild/Summary";
 
 interface Props {}
 
 export const Dashboard: FC<Props> = () => {
   const [{ data: me, fetching: meFetching }] = useMeQuery();
-  const [
-    { data: guilds, fetching: guildFetching },
-    reGuildsQuery,
-  ] = useGetGuildsQuery({ pause: true });
+  const [{ data: guilds, fetching: guildFetching }, reGuildsQuery] =
+    useGetGuildsQuery({ pause: true });
   const [initialized, setInitialized] = useState(false);
   const [guildsState, setGuildsState] = useState(guilds?.guilds);
-  const { id }: { id: string } = useParams();
-  const history = useHistory();
+  const { id } = useParams();
+  const history = useNavigate();
 
-  const gid = parseInt(id);
+  const gid = parseInt(id!);
   let body = <FetchingData />;
 
   function SortGuilds() {
@@ -49,10 +49,8 @@ export const Dashboard: FC<Props> = () => {
   }
   const [meReady, setMeReady] = useState(false);
   useEffect(() => {
-
     if (!me?.me && !meFetching) {
-      history.push("/");
-      return;
+      return history("/");
     } else if (me?.me && !meFetching) {
       setMeReady(true);
     }
@@ -73,7 +71,7 @@ export const Dashboard: FC<Props> = () => {
   if (meFetching || guildFetching || !initialized) {
     return <FetchingData />;
   }
-  if (me && me.me !== null && guilds && guilds.guilds !== null && initialized) {    
+  if (me && me.me !== null && guilds && guilds.guilds !== null && initialized) {
     body = (
       <>
         <Sidebar meData={me} guildsData={guildsState} />
@@ -81,7 +79,7 @@ export const Dashboard: FC<Props> = () => {
           {isNaN(gid) ? (
             <NotSelected />
           ) : (
-            <GuildContent gid={id} handleSorting={SortGuilds} />
+            <GuildContent gid={id!} handleSorting={SortGuilds} />
           )}
         </Box>
       </>

@@ -1,0 +1,6 @@
+.linkWrapper a.active {
+    transition: "border-width 0.06s ease";
+    border: "4px solid";
+    border-color: var(--chakra-colors-wuffel);
+    border-radius: "50%";
+}

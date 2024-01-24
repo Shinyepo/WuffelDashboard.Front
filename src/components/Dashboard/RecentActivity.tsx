@@ -24,10 +24,10 @@ interface ItemsProps {
 }
 
 export const RecentActivity: FC = () => {
-  const { id }: { id: string } = useParams();
+  const { id } = useParams();
   const [{ data, fetching }, reExec] = useGetActivityQuery({
     variables: {
-      id,
+      id: id!,
     },
   });
   const [activity, setActivity] = useState<LogActivity[] | null | undefined>();

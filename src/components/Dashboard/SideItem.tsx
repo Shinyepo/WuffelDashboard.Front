@@ -1,4 +1,4 @@
-import Icon from "@chakra-ui/icon";
+import { Icon } from "@chakra-ui/icon";
 import { Flex, Text } from "@chakra-ui/layout";
 import { Menu, MenuButton } from "@chakra-ui/menu";
 import { FC } from "react";
@@ -13,9 +13,9 @@ interface Props {
 }
 
 export const SideItem: FC<Props> = ({ url, icon, p }) => (
-  <Flex f="1">
+  <Flex flex="1">
     <Menu>
-      <NavLink className="nav-link" activeClassName="nav-active" to={url}>
+      <NavLink className="nav-link" to={url}>
         <MenuButton>
           <Flex alignItems="center">
             <Icon as={icon} boxSize={5} mr={1} />

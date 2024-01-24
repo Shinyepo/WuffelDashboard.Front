@@ -11,14 +11,19 @@ interface Props {
 
 export const DailyStatistics: FC<Props> = ({ count, trafficData }) => {
   let body = <FetchingData />;
+  
 
   if (trafficData && trafficData?.guildTraffic) {
     const traffic = trafficData.guildTraffic;
+    console.log(traffic);
+    
     const left = traffic.filter((x) => !x.joined).length;
     const joined = traffic.filter((x) => x.joined).length;
 
     let ratio = Math.floor((joined / left) * 100) / 100;
     if (!ratio) ratio = 0;
+    const cCount = parseInt(count!);
+    const displayCount = !isNaN(cCount) ? (cCount > 1000 ? (cCount / 1000).toFixed(1) + "k" : cCount) : 0;
 
     body = (
       <>
@@ -30,7 +35,7 @@ export const DailyStatistics: FC<Props> = ({ count, trafficData }) => {
           mt="60px"
         >
           <HStack spacing={16} flexWrap="wrap">
-            <UserJoins data={count} text="Total users" color="white" />
+            <UserJoins data={displayCount} text="Total users" color="white" />
             <UserJoins data={joined} text="Joined in 24h" color="green.500" />
             <UserJoins data={left} text="Left in 24h" color="red.500" />
             <UserJoins data={ratio} text="Ratio" color="white" />

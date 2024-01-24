@@ -2,7 +2,8 @@
   padding: 8px 18px;
   width: 100%;
 }
-.nav-active {
+
+.nav-link a.active {
   background-color: var(--chakra-colors-gray-800);
   border-right: 4px solid var(--chakra-colors-wuffel);
 }

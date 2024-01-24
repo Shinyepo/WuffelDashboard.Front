@@ -4,11 +4,11 @@ import { Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/menu";
 import { Portal } from "@chakra-ui/portal";
 import { FC } from "react";
 import {
-  useHistory,
-  useRouteMatch,
+  useNavigate,
   useParams,
-  withRouter,
-  RouteComponentProps,
+  RouteProps,
+  useLocation,
+  useResolvedPath,
 } from "react-router-dom";
 import {
   DiscordGuilds,
@@ -21,17 +21,18 @@ import { IoSettingsOutline, IoTrophyOutline } from "react-icons/io5"
 import { BsShield } from "react-icons/bs"
 import { AiOutlineContainer }  from "react-icons/ai"
 import { SideItem } from "./SideItem";
+import { mockGuild } from "./mock";
 
 type Props = {
   meData: MeQuery | undefined;
   guildsData: DiscordGuilds[] | null | undefined;
-} & RouteComponentProps;
+} & RouteProps;
 
 const Sidebar: FC<Props> = ({ meData, guildsData }) => {
-  const history = useHistory();
-  const { id }: { id: string } = useParams();
+  const history = useNavigate();
+  const { id } = useParams();
   const [, logout] = useLogoutMutation();
-  let { url } = useRouteMatch();
+  let url= useResolvedPath("").pathname;
 
   // useEffect(() => {
   //   if (!meData?.me) {
@@ -40,9 +41,9 @@ const Sidebar: FC<Props> = ({ meData, guildsData }) => {
   // }, [history, meData]);
 
   const handleClick = () => {
-    history.push("/");
+    history("/");
   };
-  const parsed = parseInt(id, 10);
+  const parsed = parseInt(id!, 10);
   if (!parsed) {
     url = "/dashboard";
   }
@@ -59,6 +60,8 @@ const Sidebar: FC<Props> = ({ meData, guildsData }) => {
             overflow="auto"
             css={{ scrollbarWidth: "none" }}
           >
+            <Server key={99999} id={mockGuild.id} name={mockGuild.name} icon={mockGuild.icon} inGuild={true} />
+            <hr />
             {guildsData !== null
               ? guildsData?.map((guild, idx) => (
                   <Server
@@ -147,7 +150,7 @@ const Sidebar: FC<Props> = ({ meData, guildsData }) => {
                     <MenuItem>
                       <Text>Profile</Text>
                     </MenuItem>
-                    <MenuItem onClick={async () => await logout()}>
+                    <MenuItem onClick={async () => await logout({})}>
                       <Text>Logout</Text>
                     </MenuItem>
                   </MenuList>
@@ -163,3 +166,15 @@ const Sidebar: FC<Props> = ({ meData, guildsData }) => {
 };
 
 export default withRouter(Sidebar);
+
+function withRouter<ComponentProps>(Component: React.FunctionComponent<ComponentProps>) {
+  function ComponentWithRouterProp(props: ComponentProps) {
+      const location = useLocation();
+      const navigate = useNavigate();
+      const params = useParams();
+
+      return <Component {...props} router={{ location, navigate, params }} />;
+  }
+
+  return ComponentWithRouterProp;
+}

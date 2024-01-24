@@ -1,4 +1,4 @@
-import Icon from "@chakra-ui/icon";
+import {Icon} from "@chakra-ui/icon";
 import { Flex, Box, Heading, Text } from "@chakra-ui/layout";
 import { FC } from "react";
 import { MdError } from "react-icons/md";

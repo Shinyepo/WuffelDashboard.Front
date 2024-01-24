@@ -31,7 +31,7 @@ export const AdvancedLogConfiguration: FC<Props> = ({
   channelList,
   memberList,
 }) => {
-  const { id }: { id: string } = useParams();
+  const { id } = useParams();
   const [loading, setLoading] = useState(false);
   const multiOptions = new Array<SelectOption>();
   const memberOptions = new Array<SelectOption>();
@@ -46,8 +46,8 @@ export const AdvancedLogConfiguration: FC<Props> = ({
   memberList.getGuildMembers?.map((x) => {
     const option = {
       label: x.nick
-        ? x.nick + "(" + x.username + "#" + x.discriminator + ")"
-        : x.username + "#" + x.discriminator,
+        ? x.nick + "(" + x.username + ")"
+        : x.username,
       value: x.id,
     } as SelectOption;
     memberOptions.push(option);
@@ -90,7 +90,7 @@ export const AdvancedLogConfiguration: FC<Props> = ({
     const users = selectedUsers?.map((x) => x.value);
     const res = await saveSettings({
       event: e.currentTarget.name,
-      id,
+      id: id!,
       settings: {
         channels,
         users,

@@ -27,7 +27,7 @@ const desc =
 export const MainSwitch: FC<Props> = ({ activeStatus }) => {
   const [activeState, setActiveState] = useState(activeStatus);
   const [loading, setLoading] = useState(false);
-  const { id }: { id: string } = useParams();
+  const { id } = useParams();
   const [, toggleBot] = useToggleBotMutation();
   const toast = useToast();
 
@@ -38,7 +38,7 @@ export const MainSwitch: FC<Props> = ({ activeStatus }) => {
   const handleClick = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setLoading(true);
-    const res = await toggleBot({ id, state: activeState });
+    const res = await toggleBot({ id: id!, state: activeState });
     setLoading(false);
     if (res.error || !res.data) return failedRequest(toast);
     successfulRequest(toast);
@@ -48,7 +48,7 @@ export const MainSwitch: FC<Props> = ({ activeStatus }) => {
     <Box bg="gray.700" p={5} minW="400px" position="relative">
       <Tooltip label={desc} placement="bottom">
         <Box display="flex">
-          <Heading d="inline-block">Main Switch</Heading>
+          <Heading display="inline-block">Main Switch</Heading>
           <Icon m="auto 10px" as={AiOutlineQuestionCircle} boxSize={5} />
         </Box>
       </Tooltip>

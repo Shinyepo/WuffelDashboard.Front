@@ -36,9 +36,9 @@ interface ItemsProps {
 }
 
 export const StreamerLeaderboard: FC<Props> = () => {
-  const { id }: { id: string } = useParams();
+  const { id }= useParams();
   const [{ data, fetching }, reExec] = useStreamerRankingQuery({
-    variables: { gid: id },
+    variables: { gid: id! },
   });
   const [ranking, setRanking] = useState<
     StreamLeaderboard[] | null | undefined
@@ -63,7 +63,7 @@ export const StreamerLeaderboard: FC<Props> = () => {
 
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     const { value } = e.currentTarget;
-    const res = await removeRanking({ id: value, guildId: id });
+    const res = await removeRanking({ id: value, guildId: id! });
 
     if (!res.data) return failedRequest(toast);
     if (!ranking) return failedRequest(toast);

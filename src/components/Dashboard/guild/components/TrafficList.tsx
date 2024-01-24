@@ -29,14 +29,12 @@ const Items: FC<ItemsProps> = ({ currentItems, offset }) => {
     <>
       {currentItems &&
         currentItems.map((x, idx) => (
-          <>
             <Tr key={idx} color={x.joined ? "green.500" : "red.500"}>
               <Td>{idx + 1 + offset}</Td>
               <Td>{x.nickname ? x.nickname : x.username}</Td>
               <Td>{new Date(x.createdAt).toLocaleString()}</Td>
               <Td>{x.joined ? "joined" : "left"}</Td>
             </Tr>
-          </>
         ))}
     </>
   );
