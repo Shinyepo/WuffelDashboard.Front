@@ -1,7 +1,6 @@
 import {
   Button,
   Table,
-  TableCaption,
   TableContainer,
   Tbody,
   Td,
@@ -11,15 +10,12 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { FC, MouseEvent, useEffect, useState } from "react";
-import { OperationContext } from "urql";
 import {
   GetDiscordMembersResult,
-  PrivilegedMembers,
   useGetModeratorsQuery,
   useGrantGuildPrivilegeMutation,
   useRevokeGuildPrivilegeMutation,
 } from "../../../../generated/graphql";
-import { NoData } from "../../NoData";
 import { useParams } from "react-router-dom";
 import { FetchingData } from "../../FetchingData";
 import {
@@ -117,11 +113,6 @@ export const ModList: FC<Props> = ({ memberList }) => {
     <>
       <TableContainer>
         <Table variant="simple" colorScheme="whiteAlpha">
-          {/* {pMembers && pMembers.length > 0 ? null : (
-            <TableCaption>
-              <NoData />
-            </TableCaption>
-          )} */}
           <Thead>
             <Tr>
               <Th>User</Th>
