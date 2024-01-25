@@ -7,10 +7,11 @@ import { FC } from "react";
 interface Props {
   id: string;
   handleClose: (opts?: Partial<OperationContext> | undefined) => void;
+  reFetch: (opts?: Partial<OperationContext> | undefined) => void;
   handleSorting: () => void;
 }
 
-export const NotInvited: FC<Props> = ({ id, handleClose, handleSorting }) => {
+export const NotInvited: FC<Props> = ({ id, handleClose, handleSorting, reFetch }) => {
   function handleClick (){
     const win = window.open(
       process.env.REACT_APP_INVITE_URL + `&guild_id=${id}&disable_guild_select=true`,
@@ -22,6 +23,7 @@ export const NotInvited: FC<Props> = ({ id, handleClose, handleSorting }) => {
       if(win?.closed) {
           clearInterval(timer);
           await handleClose({ requestPolicy: "network-only"});
+          await reFetch({ requestPolicy: "network-only"});
           handleSorting();
       }
   }, 1000);

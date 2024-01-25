@@ -3,7 +3,6 @@ import { Tooltip } from "@chakra-ui/react";
 import { FC } from "react";
 import { NavLink } from "react-router-dom";
 import { useMeQuery } from "../../generated/graphql";
-import { Patreon } from "./Patreon";
 import { UserMenu } from "./UserMenu";
 
 export const Navbar: FC = () => {

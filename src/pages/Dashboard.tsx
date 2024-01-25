@@ -10,8 +10,7 @@ import {
   useGetGuildsQuery,
   useMeQuery,
 } from "../generated/graphql";
-import { Route, Routes, useNavigate } from "react-router-dom";
-import { Summary } from "../components/Dashboard/guild/Summary";
+import { useNavigate } from "react-router-dom";
 
 interface Props {}
 
@@ -79,7 +78,7 @@ export const Dashboard: FC<Props> = () => {
           {isNaN(gid) ? (
             <NotSelected />
           ) : (
-            <GuildContent gid={id!} handleSorting={SortGuilds} />
+            <GuildContent gid={id!} reFetchGuilds={reGuildsQuery} handleSorting={SortGuilds} />
           )}
         </Box>
       </>
