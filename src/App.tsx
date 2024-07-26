@@ -1,16 +1,14 @@
 import React, { ComponentClass, FC } from "react";
 import "./App.css";
-import { BrowserRouter, Route, Router, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import { NoMatch } from "./pages/NoMatch";
 import { Dashboard } from "./pages/Dashboard";
-import { createBrowserHistory } from "history";
 
 interface Props {
   Component?: ComponentClass;
   pageProps?: Object;
 }
-const history = createBrowserHistory();
 
 const App: FC<Props> = ({ Component, pageProps }) => {
 

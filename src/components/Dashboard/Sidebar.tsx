@@ -56,7 +56,6 @@ const Sidebar: FC<Props> = ({ meData, guildsData }) => {
             w="70px"
             h="100%"
             bg="gray.800"
-            alignContent="center"
             overflow="auto"
             css={{ scrollbarWidth: "none" }}
           >
@@ -141,7 +140,7 @@ const Sidebar: FC<Props> = ({ meData, guildsData }) => {
                       src={`https://cdn.discordapp.com/avatars/${meData?.me?.userId}/${meData?.me?.avatar}.png?size=48`}
                     />
                     <Heading size="sm" m="auto 7px">
-                      {meData?.me?.username + "#" + meData?.me?.discriminator}
+                      {meData?.me?.username}
                     </Heading>
                   </Flex>
                 </MenuButton>

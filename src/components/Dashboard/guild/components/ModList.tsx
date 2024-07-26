@@ -14,7 +14,6 @@ import {
   GetDiscordMembersResult,
   useGetModeratorsQuery,
   useGrantGuildPrivilegeMutation,
-  useMeQuery,
   useRevokeGuildPrivilegeMutation,
 } from "../../../../generated/graphql";
 import { useParams } from "react-router-dom";

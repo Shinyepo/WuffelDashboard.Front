@@ -18,7 +18,6 @@ import {
   useStreamerRankingQuery,
 } from "../../../../generated/graphql";
 import { msToDuration } from "../../../../utilities/TimeUtils";
-import { FetchingData } from "../../FetchingData";
 import "../../../../styles/paginationStyles.css";
 import { Divider, Heading, useToast } from "@chakra-ui/react";
 import {

@@ -5,7 +5,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { ChakraProvider } from "@chakra-ui/react";
 import theme from "./theme";
-import { createClient, dedupExchange, fetchExchange, Provider } from "urql";
+import { createClient, fetchExchange, Provider } from "urql";
 import { Cache, cacheExchange, QueryInput } from "@urql/exchange-graphcache";
 import {
   GetGuildsDocument,
@@ -29,7 +29,6 @@ const client = createClient({
     credentials: "include",
   },
   exchanges: [
-    dedupExchange,
     cacheExchange({
       keys: {
         Users: () => null,
